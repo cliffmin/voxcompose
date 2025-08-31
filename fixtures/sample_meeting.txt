@@ -1,0 +1,12 @@
+Action items from the sync:
+
+- Ship v0.3 milestone tasks next week
+- Turn meeting notes into a tidy project plan
+- Identify blockers for auth integration
+- Summarize risks and open questions
+
+Next steps:
+1) Draft a concise summary with headings
+2) Use bullet points for tasks and blockers
+3) Keep it under 1 page, clear and actionable
+

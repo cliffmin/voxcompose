@@ -66,6 +66,22 @@ public class Main {
     String input = readAll(System.in).trim();
     if (input.isEmpty()) { System.out.print(""); return; }
 
+    // VOX_REFINE env toggle (default enabled)
+    String refineEnv = System.getenv("VOX_REFINE");
+    boolean refineEnabled = true;
+    if (refineEnv != null) {
+      String v = refineEnv.trim().toLowerCase(Locale.ROOT);
+      if (v.equals("0") || v.equals("false") || v.equals("no") || v.equals("off")) {
+        refineEnabled = false;
+      }
+    }
+
+    if (!refineEnabled) {
+      System.err.println("INFO: LLM refinement disabled via VOX_REFINE=" + (refineEnv == null ? "" : refineEnv));
+      System.out.print(input);
+      return;
+    }
+
     // Build system prompt (style + memory)
     StringBuilder system = new StringBuilder();
     system.append("You are VoxCompose, a local note refiner. Output ")
@@ -88,6 +104,13 @@ public class Main {
           }
         }
       }
+    }
+
+    // Distinctive log line to assert in tests
+    if (memoryPath != null) {
+      System.err.println("INFO: Running LLM refinement with model: " + model + " (memory=" + memoryPath.toString() + ")");
+    } else {
+      System.err.println("INFO: Running LLM refinement with model: " + model);
     }
 
     OkHttpClient client = new OkHttpClient.Builder()

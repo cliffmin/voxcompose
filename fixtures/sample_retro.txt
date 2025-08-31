@@ -1,0 +1,12 @@
+Project retrospective notes
+
+What went well:
+- On-call rotations improved response times
+- New monitoring reduced noise in alerts
+
+What could be improved:
+- Cross-team handoffs created delays
+- Requirements for analytics were unclear
+
+Request:
+Please produce a clear Markdown summary with a title, sections (what went well, improvements), and a brief action list.

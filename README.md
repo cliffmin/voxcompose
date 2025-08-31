@@ -32,6 +32,13 @@ CLI flags
 - --memory <jsonl-path>  # Optional JSONL memory; recent lines influence style/terminology
 - --format markdown      # Reserved; markdown is the default and only format today
 
+Logging and test toggle
+- On refinement start, the CLI writes to stderr:
+  INFO: Running LLM refinement with model: <name> (memory=<path>)
+- To disable refinement for tests or debugging, set VOX_REFINE=0. The CLI logs:
+  INFO: LLM refinement disabled via VOX_REFINE=0
+  and echoes the raw input to stdout.
+
 Memory file format (JSONL)
 - One JSON object per line, e.g.:
   {"ts":"2025-08-31T02:00:00Z","kind":"preference","tags":["tone"],"text":"Prefer concise bullet points."}
@@ -83,3 +90,17 @@ Memory JSONL (optional)
 Integration test reference
 - macos-ptt-dictation provides an integration script: tests/integration/longform_to_markdown.sh
   - Uses your local WAV (not checked into git), runs Whisper → VoxCompose, asserts Markdown structure.
+
+Fixture tests (this repo)
+- Run tests/refine_fixtures.sh to refine text fixtures and assert the refinement log appears.
+  - Requires the fat jar:
+    ./gradlew --no-daemon clean fatJar
+  - Place one or more .txt files under tests/fixtures/ (not committed) or run tests/select_fixtures.sh to collect a small set from ~/Documents/VoiceNotes.
+  - The script asserts:
+    - Non-empty output to stdout
+    - A log line on stderr: "INFO: Running LLM refinement with model: …"
+    - A disabled-path smoke check with VOX_REFINE=0
+
+## Changelog
+
+See [CHANGELOG.md](./CHANGELOG.md)
