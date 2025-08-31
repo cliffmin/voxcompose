@@ -1,0 +1,13 @@
+# Java
+/build/
+/.gradle/
+.gradle/
+
+# macOS
+.DS_Store
+
+# Local audio/text fixtures (not committed)
+/tests/fixtures/*.wav
+/tests/fixtures/*.json
+/tests/fixtures/*.txt
+
