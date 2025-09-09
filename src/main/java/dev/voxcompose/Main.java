@@ -41,15 +41,22 @@ public class Main {
   public static void main(String[] args) throws Exception {
     // Defaults
     String model = "llama3.1";
+    String modelSource = "default";
     int timeoutMs = 10000;
     String format = "markdown";
     Path memoryPath = null;
+    String outPath = null;
+    String sidecarPath = null;
+    String provider = "ollama";
+    String apiUrlArg = null;
+    String endpoint = null;
+    String endpointSource = "default";
 
     // Parse args
     for (int i = 0; i < args.length; i++) {
       switch (args[i]) {
         case "--model":
-          if (i + 1 < args.length) model = args[++i];
+          if (i + 1 < args.length) { model = args[++i]; modelSource = "flag"; }
           break;
         case "--timeout-ms":
           if (i + 1 < args.length) timeoutMs = Integer.parseInt(args[++i]);
@@ -59,6 +66,18 @@ public class Main {
           break;
         case "--memory":
           if (i + 1 < args.length) memoryPath = Paths.get(args[++i]);
+          break;
+        case "--out":
+          if (i + 1 < args.length) outPath = args[++i];
+          break;
+        case "--sidecar":
+          if (i + 1 < args.length) sidecarPath = args[++i];
+          break;
+        case "--provider":
+          if (i + 1 < args.length) provider = args[++i];
+          break;
+        case "--api-url":
+          if (i + 1 < args.length) apiUrlArg = args[++i];
           break;
       }
     }
@@ -88,8 +107,10 @@ public class Main {
           .append(format)
           .append(" with clear structure. Use headings, bullets, short paragraphs. Preserve meaning; fix disfluencies.\n");
 
+    int memoryUsedCount = 0;
     if (memoryPath != null) {
       List<String> mem = readMemoryLines(memoryPath, 20);
+      memoryUsedCount = mem.size();
       if (!mem.isEmpty()) {
         system.append("Incorporate these user preferences/glossary items when appropriate (do not hallucinate):\n");
         for (String line : mem) {
@@ -106,7 +127,46 @@ public class Main {
       }
     }
 
-    // Distinctive log line to assert in tests
+    // Resolve model from env if not provided via flag
+    if (!"flag".equals(modelSource)) {
+      String envModel = System.getenv("AI_AGENT_MODEL");
+      if (envModel != null && !envModel.isBlank()) {
+        model = envModel.trim();
+        modelSource = "AI_AGENT_MODEL";
+      }
+    }
+
+    // Resolve endpoint with precedence: --api-url > AI_AGENT_URL > OLLAMA_HOST > default
+    String base = null;
+    if (apiUrlArg != null && !apiUrlArg.isBlank()) {
+      base = apiUrlArg.trim();
+      endpointSource = "flag";
+    } else {
+      String envApi = System.getenv("AI_AGENT_URL");
+      String envOllama = System.getenv("OLLAMA_HOST");
+      if (envApi != null && !envApi.isBlank()) {
+        base = envApi.trim();
+        endpointSource = "AI_AGENT_URL";
+      } else if (envOllama != null && !envOllama.isBlank()) {
+        base = envOllama.trim();
+        endpointSource = "OLLAMA_HOST";
+      } else {
+        base = "http://127.0.0.1:11434";
+        endpointSource = "default";
+      }
+    }
+    String normalizedBase = base.replaceAll("/+$", "");
+    if (normalizedBase.endsWith("/api/generate")) {
+      endpoint = normalizedBase;
+    } else {
+      endpoint = normalizedBase + "/api/generate";
+    }
+
+    // Logging: configuration sources
+    System.err.println("INFO: Using LLM model: " + model + " (source=" + modelSource + ")");
+    System.err.println("INFO: Using LLM endpoint: " + endpoint + " (source=" + endpointSource + ")");
+
+    // Distinctive log line to assert in tests (kept for backward compatibility)
     if (memoryPath != null) {
       System.err.println("INFO: Running LLM refinement with model: " + model + " (memory=" + memoryPath.toString() + ")");
     } else {
@@ -124,24 +184,53 @@ public class Main {
     req.addProperty("stream", false);
 
     Request request = new Request.Builder()
-      .url("http://127.0.0.1:11434/api/generate")
+      .url(endpoint)
       .post(RequestBody.create(req.toString(), MediaType.parse("application/json")))
       .build();
+
+    long tStart = System.currentTimeMillis();
+    boolean ok = true;
+    String finalOut = input;
 
     try (Response resp = client.newCall(request).execute()) {
       if (!resp.isSuccessful()) {
         System.err.println("Ollama error: " + resp.code() + " " + resp.message());
-        System.out.print(input); // fallback to raw
-        return;
+        ok = false;
+      } else {
+        String body = resp.body().string();
+        JsonObject json = JsonParser.parseString(body).getAsJsonObject();
+        finalOut = json.has("response") ? json.get("response").getAsString() : input;
       }
-      String body = resp.body().string();
-      JsonObject json = JsonParser.parseString(body).getAsJsonObject();
-      String out = json.has("response") ? json.get("response").getAsString() : input;
-      System.out.print(out);
     } catch (Exception e) {
       System.err.println("Ollama call failed: " + e.getMessage());
-      System.out.print(input); // fallback to raw
+      ok = false;
     }
+
+    long refineMs = System.currentTimeMillis() - tStart;
+
+    // Always print something to stdout for backward compatibility
+    System.out.print(ok ? finalOut : input);
+
+    // Optional file outputs
+    if (outPath != null) {
+      try { Files.write(Paths.get(outPath), (ok ? finalOut : input).getBytes(StandardCharsets.UTF_8)); } catch (Exception ignored) {}
+    }
+    if (sidecarPath != null) {
+      try {
+        JsonObject sc = new JsonObject();
+        sc.addProperty("ok", ok);
+        sc.addProperty("provider", provider);
+        sc.addProperty("model", model);
+        sc.addProperty("model_source", modelSource);
+        sc.addProperty("endpoint", endpoint);
+        sc.addProperty("endpoint_source", endpointSource);
+        sc.addProperty("refine_ms", refineMs);
+        sc.addProperty("memory_items_used", memoryUsedCount);
+        Files.write(Paths.get(sidecarPath), sc.toString().getBytes(StandardCharsets.UTF_8));
+      } catch (Exception ignored) {}
+    }
+
+    if (!ok) System.exit(1);
   }
 }
 

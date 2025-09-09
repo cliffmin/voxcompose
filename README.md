@@ -14,26 +14,38 @@ Quick start
    ollama serve >/dev/null 2>&1 &
    ollama pull llama3.1
 
-2) Build (requires Gradle 7.6+)
+2) Build (uses Gradle wrapper)
    cd ~/code/voxcompose
-   gradle --no-daemon clean shadowJar
+   ./gradlew --no-daemon clean fatJar
 
 3) Run
    echo "draft notes about a meeting..." | \
-     java -jar build/libs/voxcompose-all.jar \
+     java -jar build/libs/voxcompose-0.1.0-all.jar \
        --model llama3.1 \
        --timeout-ms 8000 \
        --memory "$HOME/Library/Application Support/voxcompose/memory.jsonl" \
-     > /tmp/out.md && open /tmp/out.md
+       --sidecar /tmp/refine.json --out /tmp/out.md && open /tmp/out.md
 
 CLI flags
-- --model <name>         # Ollama model (default: llama3.1)
+- --model <name>         # Model name (default: llama3.1)
 - --timeout-ms <ms>      # HTTP call timeout (default: 10000)
 - --memory <jsonl-path>  # Optional JSONL memory; recent lines influence style/terminology
 - --format markdown      # Reserved; markdown is the default and only format today
+- --out <file>           # Optional: also write the output to a file
+- --sidecar <file>       # Optional: write a JSON sidecar with {ok, provider, model, endpoint, refine_ms, memory_items_used}
+- --provider <name>      # Optional: provider name (default: ollama). For future expansion.
+- --api-url <url>        # Optional: override endpoint (e.g., http://127.0.0.1:11434 or full /api/generate)
+
+Environment variables and precedence
+- Model: --model > AI_AGENT_MODEL > default: llama3.1
+- Endpoint: --api-url > AI_AGENT_URL > OLLAMA_HOST > default base http://127.0.0.1:11434
+  - If the chosen value does not end with /api/generate, it is appended automatically.
+- Toggle: VOX_REFINE=0 disables refinement and echoes input.
 
 Logging and test toggle
 - On refinement start, the CLI writes to stderr:
+  INFO: Using LLM model: <name> (source=<flag|AI_AGENT_MODEL|default>)
+  INFO: Using LLM endpoint: <url> (source=<flag|AI_AGENT_URL|OLLAMA_HOST|default>)
   INFO: Running LLM refinement with model: <name> (memory=<path>)
 - To disable refinement for tests or debugging, set VOX_REFINE=0. The CLI logs:
   INFO: LLM refinement disabled via VOX_REFINE=0
@@ -100,6 +112,18 @@ Fixture tests (this repo)
     - Non-empty output to stdout
     - A log line on stderr: "INFO: Running LLM refinement with model: …"
     - A disabled-path smoke check with VOX_REFINE=0
+
+Install via Homebrew
+- Once a release is published, you can install via a Homebrew Tap:
+  - brew tap cliffmin/tap
+  - brew install voxcompose
+- On Apple Silicon, the installed binary is at /opt/homebrew/bin/voxcompose; on Intel Macs it is /usr/local/bin/voxcompose.
+- The formula expects a released jar named voxcompose-<version>-all.jar.
+- After each release, update the formula's sha256 with the jar's checksum shown in the GitHub Release body.
+
+Using the wrapper
+- voxcompose --model llama3.1 --timeout-ms 8000 --memory "$HOME/Library/Application Support/voxcompose/memory.jsonl"
+- Or rely on env: AI_AGENT_MODEL, AI_AGENT_URL, OLLAMA_HOST (flags override env).
 
 ## Changelog
 
