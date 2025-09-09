@@ -51,6 +51,7 @@ public class Main {
     String apiUrlArg = null;
     String endpoint = null;
     String endpointSource = "default";
+    boolean showHelp = false;
 
     // Parse args
     for (int i = 0; i < args.length; i++) {
@@ -79,7 +80,39 @@ public class Main {
         case "--api-url":
           if (i + 1 < args.length) apiUrlArg = args[++i];
           break;
+        case "--help":
+        case "-h":
+          showHelp = true;
+          break;
       }
+    }
+
+    if (showHelp) {
+      String usage = String.join("\n",
+        "VoxCompose - local LLM Markdown refiner (Ollama)",
+        "",
+        "Usage:",
+        "  voxcompose [flags] < input.txt > output.md",
+        "",
+        "Flags:",
+        "  --model <name>         Model name (default: llama3.1)",
+        "  --timeout-ms <ms>      HTTP call timeout (default: 10000)",
+        "  --memory <jsonl-path>  Optional JSONL memory file",
+        "  --format <fmt>         Output format (default: markdown)",
+        "  --out <file>           Also write output to file",
+        "  --sidecar <file>       Write JSON sidecar with metadata",
+        "  --provider <name>      Provider name (default: ollama)",
+        "  --api-url <url>        Override endpoint (base or full /api/generate)",
+        "  --help, -h             Show this help and exit",
+        "",
+        "Environment (overridden by flags):",
+        "  AI_AGENT_MODEL         Default model name",
+        "  AI_AGENT_URL           Base URL (or full /api/generate)",
+        "  OLLAMA_HOST            Ollama base URL",
+        "  VOX_REFINE             Set 0/false to disable refinement"
+      );
+      System.err.println(usage);
+      System.exit(2);
     }
 
     String input = readAll(System.in).trim();

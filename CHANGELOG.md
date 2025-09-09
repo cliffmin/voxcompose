@@ -14,6 +14,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Added additional logs for effective model/endpoint and their sources
 - Sidecar now includes endpoint, model_source, and endpoint_source fields
 - Updated README to document configuration and precedence
+- Added --help flag that prints usage and exits with code 2 (for Homebrew test)
 
 ## 0.1.0 - 2025-08-31
 ### Added

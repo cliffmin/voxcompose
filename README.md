@@ -35,6 +35,7 @@ CLI flags
 - --sidecar <file>       # Optional: write a JSON sidecar with {ok, provider, model, endpoint, refine_ms, memory_items_used}
 - --provider <name>      # Optional: provider name (default: ollama). For future expansion.
 - --api-url <url>        # Optional: override endpoint (e.g., http://127.0.0.1:11434 or full /api/generate)
+- --help, -h             # Show usage and exit (exit code 2)
 
 Environment variables and precedence
 - Model: --model > AI_AGENT_MODEL > default: llama3.1
