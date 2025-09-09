@@ -7,7 +7,7 @@ group = "dev.voxcompose"
 version = "0.1.0"
 
 java {
-  toolchain { languageVersion.set(JavaLanguageVersion.of(17)) }
+  toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
 }
 
 repositories { mavenCentral() }
