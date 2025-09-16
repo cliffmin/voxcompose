@@ -27,7 +27,7 @@ VoxCompose transforms raw transcripts into polished Markdown using intelligent c
 - **[🧠 Self-Learning System](docs/SELF_LEARNING.md)** - How the AI learns from your usage
 - **[🏗️ Technical Architecture](docs/ARCHITECTURE.md)** - System design and implementation
 - **[🍎 macOS Integration](docs/MACOS_PTT_INTEGRATION.md)** - Setup with push-to-talk dictation
-- **[📍 Repository Structure](WARP.md)** - Canonical file structure reference
+- **[📍 Repository Structure](warp.md)** - Canonical file structure reference
 
 ## 📈 Performance & Accuracy
 
