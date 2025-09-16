@@ -59,6 +59,21 @@ public class Main {
     LearningService learner = LearningService.getInstance();
     String corrected = learner.applyCorrections(input);
     
+    // Check duration threshold if provided
+    if (config.getInputDurationSeconds() > 0) {
+      int threshold = learner.getProfile().getMinDurationForRefinement();
+      if (config.getInputDurationSeconds() < threshold) {
+        System.err.println("INFO: Skipping LLM refinement - duration " + 
+                          config.getInputDurationSeconds() + "s below threshold " + threshold + "s");
+        System.out.print(corrected);
+        // Still learn from the correction patterns
+        if (!input.equals(corrected)) {
+          learner.learnAsync(input, corrected);
+        }
+        return;
+      }
+    }
+    
     // Check if refinement is disabled
     if (!config.isRefineEnabled()) {
       System.err.println("INFO: LLM refinement disabled via VOX_REFINE");

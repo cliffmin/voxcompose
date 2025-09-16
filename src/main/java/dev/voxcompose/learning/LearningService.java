@@ -99,8 +99,8 @@ public class LearningService {
         String[] suffixes = {"would", "should", "could", "will", "have", "been", "into", "with", "to"};
         
         for (String suffix : suffixes) {
-            // Pattern: word+suffix without space
-            String pattern = "\\b([a-z]+)(" + suffix + ")\\b";
+            // Pattern: word+suffix without space (case insensitive)
+            String pattern = "(?i)\\b([a-zA-Z]+)(" + suffix + ")\\b";
             text = text.replaceAll(pattern, "$1 $2");
         }
         
