@@ -4,6 +4,7 @@ import com.google.gson.*;
 import dev.voxcompose.cache.RefineCache;
 import dev.voxcompose.client.OllamaClient;
 import dev.voxcompose.config.Configuration;
+import dev.voxcompose.dictionary.DictionaryManager;
 import dev.voxcompose.io.InputReader;
 import dev.voxcompose.learning.LearningService;
 import dev.voxcompose.memory.MemoryManager;
@@ -52,9 +53,13 @@ public class Main {
       return;
     }
 
-    // Apply learned corrections even if refinement is disabled
+    // Apply dictionary corrections first
+    DictionaryManager dictionaryManager = new DictionaryManager();
+    String corrected = dictionaryManager.refine(input);
+    
+    // Then apply learned corrections
     LearningService learner = LearningService.getInstance();
-    String corrected = learner.applyCorrections(input);
+    corrected = learner.applyCorrections(corrected);
 
     // Check duration threshold if provided
     if (config.getInputDurationSeconds() > 0) {

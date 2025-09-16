@@ -99,6 +99,7 @@ public class DictionaryManager {
 
     String[] lines = yaml.split("\n");
     String currentSection = "";
+    BoundaryRule currentBoundary = null;
 
     for (String line : lines) {
       if (line.startsWith("name:")) {
@@ -107,16 +108,48 @@ public class DictionaryManager {
         dict.setPriority(Integer.parseInt(line.substring(9).trim()));
       } else if (line.startsWith("enabled:")) {
         dict.setEnabled(Boolean.parseBoolean(line.substring(8).trim()));
-      } else if (line.equals("terms:")) {
+      } else if (line.trim().equals("terms:")) {
         currentSection = "terms";
-      } else if (line.equals("boundaries:")) {
+      } else if (line.trim().equals("boundaries:")) {
         currentSection = "boundaries";
       } else if (currentSection.equals("terms") && line.contains(":") && line.startsWith("  ")) {
         String[] parts = line.trim().split(":", 2);
-        if (parts.length == 2) {
+        if (parts.length == 2 && !parts[0].startsWith("#")) {
           terms.put(parts[0].trim(), parts[1].trim());
         }
+      } else if (currentSection.equals("boundaries")) {
+        if (line.trim().startsWith("- pattern:")) {
+          // Start of new boundary rule
+          if (currentBoundary != null) {
+            boundaries.add(currentBoundary);
+          }
+          currentBoundary = new BoundaryRule();
+          String pattern = line.substring(line.indexOf("pattern:") + 8).trim();
+          // Remove quotes if present
+          if (pattern.startsWith("\"") && pattern.endsWith("\"")) {
+            pattern = pattern.substring(1, pattern.length() - 1);
+          }
+          currentBoundary.pattern = pattern;
+        } else if (line.trim().startsWith("replacement:") && currentBoundary != null) {
+          String replacement = line.substring(line.indexOf("replacement:") + 12).trim();
+          // Remove quotes if present
+          if (replacement.startsWith("\"") && replacement.endsWith("\"")) {
+            replacement = replacement.substring(1, replacement.length() - 1);
+          }
+          currentBoundary.replacement = replacement;
+        } else if (line.trim().startsWith("context:") && currentBoundary != null) {
+          String context = line.substring(line.indexOf("context:") + 8).trim();
+          if (context.startsWith("\"") && context.endsWith("\"")) {
+            context = context.substring(1, context.length() - 1);
+          }
+          currentBoundary.context = context;
+        }
       }
+    }
+
+    // Add last boundary if exists
+    if (currentBoundary != null && currentBoundary.pattern != null) {
+      boundaries.add(currentBoundary);
     }
 
     dict.setTerms(terms);
@@ -249,9 +282,9 @@ public class DictionaryManager {
    * Boundary rule for fixing word concatenations
    */
   public static class BoundaryRule {
-    private String pattern;
-    private String replacement;
-    private String context;
+    String pattern;
+    String replacement;
+    String context;
 
     public String getPattern() {
       return pattern;
@@ -259,6 +292,10 @@ public class DictionaryManager {
 
     public String getReplacement() {
       return replacement;
+    }
+    
+    public String getContext() {
+      return context;
     }
   }
 }
