@@ -7,10 +7,22 @@
 .DS_Store
 
 # Local audio/text fixtures (not committed)
-/tests/fixtures/*.wav
-/tests/fixtures/*.json
-/tests/fixtures/*.txt
+/tests/fixtures/
 
+# User-specific data and caches
+~/.config/voxcompose/
+/tests/metrics.json
+/tests/graphs/
+*.cache
+*.profile.json
+*.learned
+
+# Local test output
+/tests/output/
+/tests/reports/
+
+# Temporary fixes and patches
+/fixes/
 
 # IntelliJ IDEA
 .idea/**/workspace.xml

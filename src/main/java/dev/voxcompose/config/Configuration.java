@@ -25,6 +25,7 @@ public class Configuration {
     private boolean enableCache = false;
     private int cacheMaxSize = 100;
     private long cacheTtlMs = 3600000; // 1 hour default
+    private int inputDurationSeconds = 0; // Audio duration from caller
     
     /**
      * Parse configuration from command-line arguments and environment variables.
@@ -106,6 +107,11 @@ public class Configuration {
                 case "--cache-ttl-ms":
                     if (i + 1 < args.length) {
                         cacheTtlMs = Long.parseLong(args[++i]);
+                    }
+                    break;
+                case "--duration":
+                    if (i + 1 < args.length) {
+                        inputDurationSeconds = Integer.parseInt(args[++i]);
                     }
                     break;
                 case "--help":
@@ -193,6 +199,7 @@ public class Configuration {
             "  --cache                Enable response caching",
             "  --cache-size <n>       Max cache entries (default: 100)",
             "  --cache-ttl-ms <ms>    Cache TTL in milliseconds (default: 3600000)",
+            "  --duration <seconds>   Input audio duration (for threshold checking)",
             "  --help, -h             Show this help and exit",
             "",
             "Environment (overridden by flags):",
@@ -220,4 +227,5 @@ public class Configuration {
     public boolean isCacheEnabled() { return enableCache; }
     public int getCacheMaxSize() { return cacheMaxSize; }
     public long getCacheTtlMs() { return cacheTtlMs; }
+    public int getInputDurationSeconds() { return inputDurationSeconds; }
 }

@@ -128,6 +128,13 @@ public class Capabilities {
             caps.learning.lastUpdated = LocalDateTime.now().format(
                 DateTimeFormatter.ISO_LOCAL_DATE_TIME
             );
+            
+            // Log for debugging
+            System.err.println("INFO: Loaded profile with threshold: " + 
+                             profile.getMinDurationForRefinement() + "s, " +
+                             profile.getCorrectionsCount() + " corrections");
+        } else {
+            System.err.println("INFO: No profile found, using defaults");
         }
         
         return caps;
