@@ -10,9 +10,19 @@
 
 VoxCompose refines raw speech-to-text transcripts by learning from your corrections, building personalized dictionaries, and applying intelligent transformations—all running locally on your machine.
 
+**Perfect companion for [macOS Push-to-Talk Dictation](https://github.com/cliffmin/macos-ptt-dictation)** - VoxCompose acts as the intelligent post-processor that transforms raw Whisper output into polished, technically accurate text.
+
 ## What is VoxCompose?
 
 VoxCompose is a transcript refinement tool that sits between your speech recognition system and your final text. It learns from your writing patterns, technical vocabulary, and correction preferences to automatically fix common transcription errors.
+
+### Primary Use Case: Voice Dictation Post-Processing
+
+```
+[Hold Key] → [Record Audio] → [Whisper Transcribes] → [VoxCompose Refines] → [Perfect Text]
+```
+
+Whether you're using macOS PTT Dictation, Dragon, or any other speech-to-text system, VoxCompose ensures your technical vocabulary, proper nouns, and common patterns are correctly formatted.
 
 ### Core Capabilities
 
@@ -101,6 +111,8 @@ Refined text is returned in milliseconds, ready for use
 
 ## Quick Start
 
+### Standalone Usage
+
 ```bash
 # Install via Homebrew
 brew tap cliffmin/tap
@@ -109,6 +121,20 @@ brew install voxcompose
 # Test with sample transcript
 echo "i need to pushto github" | voxcompose
 # Output: "I need to push to GitHub"
+```
+
+### With Voice Dictation (Recommended)
+
+For the best experience, use VoxCompose with [macOS Push-to-Talk Dictation](https://github.com/cliffmin/macos-ptt-dictation):
+
+```bash
+# Install the complete voice-to-text pipeline
+brew install --cask hammerspoon
+brew install ffmpeg whisper-cpp
+brew install cliffmin/tap/voxcompose
+
+# Configure PTT to use VoxCompose for post-processing
+# See Integration section below for setup details
 ```
 
 ### With Local LLM (Optional)
@@ -151,22 +177,22 @@ Create `~/.voxcompose/memory.jsonl`:
 
 ## 🔗 Integration with macOS PTT Dictation
 
-VoxCompose seamlessly integrates with [macos-ptt-dictation](https://github.com/cliffmin/macos-ptt-dictation) for a complete voice-to-text workflow:
+VoxCompose seamlessly integrates with [macOS Push-to-Talk Dictation](https://github.com/cliffmin/macos-ptt-dictation) for a complete voice-to-text workflow:
 
 ### How It Works
 
 ```mermaid
 graph LR
-    A[Hold F13] --> B[Audio Recording]
+    A[Hold Hotkey] --> B[Audio Recording]
     B --> C[Whisper Transcription]
     C --> D[VoxCompose Refinement]
     D --> E[Polished Text at Cursor]
 ```
 
-1. **Push-to-Talk**: Hold F13 to record, release to process
+1. **Push-to-Talk**: Hold `Cmd+Alt+Ctrl+Space` (or your custom hotkey) to record
 2. **Transcription**: Whisper converts audio to text locally  
 3. **Refinement**: VoxCompose applies corrections and formatting
-4. **Insertion**: Text appears at your cursor position
+4. **Insertion**: Polished text appears at your cursor position
 
 ### Quick Setup
 
