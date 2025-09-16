@@ -109,8 +109,10 @@ public class Main {
       String cachedResult = cache.get(cacheKey);
       if (cachedResult != null) {
         System.err.println("INFO: Using cached result");
-        System.out.print(cachedResult);
-        writeOptionalOutputs(config, cachedResult, true, 0, memoryUsedCount);
+        // Apply corrections to cached result too
+        String correctedCached = learner.applyCorrections(cachedResult);
+        System.out.print(correctedCached);
+        writeOptionalOutputs(config, correctedCached, true, 0, memoryUsedCount);
         return;
       }
     }
@@ -118,7 +120,7 @@ public class Main {
     // Create optimized Ollama client
     OllamaClient ollamaClient = new OllamaClient(config.getEndpoint(), config.getTimeoutMs());
     
-    String finalOut = input;
+    String finalOut = corrected;  // Start with corrected version
     boolean ok = false;
     long refineMs = 0;
     
@@ -150,11 +152,16 @@ public class Main {
       ok = false;
     }
 
-    // Always print something to stdout for backward compatibility
-    System.out.print(ok ? finalOut : input);
+    // Always apply corrections to final output
+    if (!ok) {
+      finalOut = corrected;  // Use corrected version if LLM failed
+    }
+    
+    // Always print something to stdout
+    System.out.print(finalOut);
     
     // Write optional outputs
-    writeOptionalOutputs(config, ok ? finalOut : input, ok, refineMs, memoryUsedCount);
+    writeOptionalOutputs(config, finalOut, ok, refineMs, memoryUsedCount);
     
     // Cleanup
     OllamaClient.shutdown();
