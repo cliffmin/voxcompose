@@ -1,0 +1,32 @@
+name: Docs
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Markdown Link Check
+        uses: gaurav-nelson/github-action-markdown-link-check@v1
+        with:
+          use-verbose-mode: 'yes'
+          config-file: '.markdown-link-check.json'
+          folder-path: '.,docs'
+
+  hygiene:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Ensure no build system files
+        run: |
+          set -e
+          test ! -e build.gradle.kts || (echo "build.gradle.kts should not exist" && exit 1)
+          test ! -e settings.gradle.kts || (echo "settings.gradle.kts should not exist" && exit 1)
+          test ! -d gradle || (echo "gradle/ should not exist" && exit 1)
+          test ! -d src || (echo "src/ should not exist" && exit 1)
+          test ! -d packaging || (echo "packaging/ should not exist" && exit 1)
+          test ! -d bin || (echo "bin/ should not exist" && exit 1)

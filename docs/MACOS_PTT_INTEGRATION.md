@@ -108,15 +108,15 @@ java -jar voxcompose.jar --capabilities | jq '.activation.long_form.min_duration
 # Output: 21
 ```
 
-## Monitoring & Debugging
+### Monitoring & Debugging
 
 View VoxCompose logs:
 ```bash
 # Enable debug logging
 export VOX_DEBUG=1
 
-# Check learned corrections
-cat ~/.config/voxcompose/learned_profile.json | jq '.'
+# Check learned corrections (new location precedence)
+python3 tools/show_learning.py --json | jq '.'
 ```
 
 ## Migration Notes

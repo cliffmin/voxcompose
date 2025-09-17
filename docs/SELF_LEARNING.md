@@ -47,6 +47,7 @@ The system begins learning immediately upon first use:
 - **No cloud dependency**: All learning happens locally
 - **No manual configuration**: Automatically detects patterns
 - **Privacy-first**: Your data never leaves your machine
+ - **Optional memory file**: `~/.config/voxcompose/memory.jsonl` is auto-discovered when present (or pass via `--memory`); both `text` and legacy `content` JSONL fields are supported
 
 ### 2. Intelligent Pattern Recognition
 
@@ -168,12 +169,21 @@ Improvement: 92% faster for common corrections
 
 ### Storage Location
 
-Learning data is stored locally at:
+Learning data is stored locally using the XDG/data (or macOS Application Support) convention with the following precedence:
+
+1) VOXCOMPOSE_DATA_DIR/learned_profile.json (if set)
+2) $XDG_DATA_HOME/voxcompose/learned_profile.json (if set)
+3) macOS: ~/Library/Application Support/VoxCompose/learned_profile.json
+4) Linux/other: ~/.local/share/voxcompose/learned_profile.json
+
+You can inspect, modify, or delete this file at any time.
+
+Legacy location (pre-migration):
 ```
 ~/.config/voxcompose/learned_profile.json
 ```
 
-You can inspect, modify, or delete this file at any time.
+Note: New tools and scripts no longer read the legacy location directly. Use `tools/migrate_learning_data.sh` to move your profile.
 
 ## Advanced Features
 
@@ -228,18 +238,67 @@ Most common corrections:
 
 To start fresh:
 ```bash
-rm ~/.config/voxcompose/learned_profile.json
+# preferred new location
+rm "$(python3 - <<'PY'
+import os,platform
+from pathlib import Path
+xdg=os.getenv('XDG_DATA_HOME')
+if os.getenv('VOXCOMPOSE_DATA_DIR'):
+    print(Path(os.environ['VOXCOMPOSE_DATA_DIR'])/'learned_profile.json')
+elif xdg:
+    print(Path(xdg)/'voxcompose'/'learned_profile.json')
+elif platform.system()=='Darwin':
+    print(Path.home()/'Library'/'Application Support'/'VoxCompose'/'learned_profile.json')
+else:
+    print(Path.home()/'.local'/'share'/'voxcompose'/'learned_profile.json')
+PY)"
+
+# legacy location (remove if it still exists)
+rm -f ~/.config/voxcompose/learned_profile.json
 ```
 
 ### Export/Import Learning
 
 Share learning profiles between machines:
 ```bash
-# Export
-cp ~/.config/voxcompose/learned_profile.json ~/Desktop/my_profile.json
+# Export (new location)
+python3 - <<'PY'
+import os,platform,shutil
+from pathlib import Path
+xdg=os.getenv('XDG_DATA_HOME')
+if os.getenv('VOXCOMPOSE_DATA_DIR'):
+    p=Path(os.environ['VOXCOMPOSE_DATA_DIR'])/'learned_profile.json'
+elif xdg:
+    p=Path(xdg)/'voxcompose'/'learned_profile.json'
+elif platform.system()=='Darwin':
+    p=Path.home()/'Library'/'Application Support'/'VoxCompose'/'learned_profile.json'
+else:
+    p=Path.home()/'.local'/'share'/'voxcompose'/'learned_profile.json'
+print(p)
+shutil.copy(p, Path.home()/"Desktop"/"my_profile.json")
+PY
 
-# Import
-cp ~/Desktop/my_profile.json ~/.config/voxcompose/learned_profile.json
+# Import (new location)
+python3 - <<'PY'
+import os,platform,shutil
+from pathlib import Path
+src=Path.home()/"Desktop"/"my_profile.json"
+xdg=os.getenv('XDG_DATA_HOME')
+if os.getenv('VOXCOMPOSE_DATA_DIR'):
+    dst=Path(os.environ['VOXCOMPOSE_DATA_DIR'])/'learned_profile.json'
+elif xdg:
+    dst=Path(xdg)/'voxcompose'/'learned_profile.json'
+elif platform.system()=='Darwin':
+    dst=Path.home()/'Library'/'Application Support'/'VoxCompose'/'learned_profile.json'
+else:
+    dst=Path.home()/'.local'/'share'/'voxcompose'/'learned_profile.json'
+dst.parent.mkdir(parents=True, exist_ok=True)
+shutil.copy(src, dst)
+print(dst)
+PY
+
+# Legacy path (for reference only):
+# ~/.config/voxcompose/learned_profile.json
 ```
 
 ## Frequently Asked Questions

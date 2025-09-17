@@ -1,28 +1,33 @@
-# VoxCompose
+# VoxCompose Resources
 
-[![CI](https://github.com/cliffmin/voxcompose/actions/workflows/ci.yml/badge.svg)](https://github.com/cliffmin/voxcompose/actions/workflows/ci.yml)
-[![Security](https://github.com/cliffmin/voxcompose/actions/workflows/security.yml/badge.svg)](https://github.com/cliffmin/voxcompose/actions/workflows/security.yml)
-[![Code Quality](https://github.com/cliffmin/voxcompose/actions/workflows/quality.yml/badge.svg)](https://github.com/cliffmin/voxcompose/actions/workflows/quality.yml)
-[![Release](https://img.shields.io/github/v/release/cliffmin/voxcompose)](https://github.com/cliffmin/voxcompose/releases)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+This repository is a resource dump for interview prep and technical discussion. It does not contain a runnable application, build system, or release artifacts. Instead, it aggregates design documents, examples, and reference materials about the VoxCompose concept: an intelligent transcript refiner with self-learning corrections and customizable dictionaries.
 
-**Intelligent transcript refinement with self-learning corrections and customizable dictionaries**
+## Table of Contents
 
-VoxCompose refines raw speech-to-text transcripts by learning from your corrections, building personalized dictionaries, and applying intelligent transformations—all running locally on your machine.
-
-**Perfect companion for [macOS Push-to-Talk Dictation](https://github.com/cliffmin/macos-ptt-dictation)** - VoxCompose acts as the intelligent post-processor that transforms raw Whisper output into polished, technically accurate text.
+- Overview
+- How It Works
+- Examples
+- Quick Start
+- Configuration
+- Capabilities
+- Integration (macOS PTT)
+- Testing
+- Documentation
+- Installation
+- Requirements
+- Contributing
+- License
+- Project Achievements
 
 ## What is VoxCompose?
 
-VoxCompose is a transcript refinement tool that sits between your speech recognition system and your final text. It learns from your writing patterns, technical vocabulary, and correction preferences to automatically fix common transcription errors.
+Conceptually, VoxCompose is a transcript refinement layer that sits between a speech recognition system and the destination text. It learns from your writing patterns, technical vocabulary, and correction preferences to automatically fix common transcription errors. The materials here describe such a system’s design and behavior.
 
-### Primary Use Case: Voice Dictation Post-Processing
+### Primary Use Case (Concept)
 
 ```
-[Hold Key] → [Record Audio] → [Whisper Transcribes] → [VoxCompose Refines] → [Perfect Text]
+[Hold Key] → [Record Audio] → [Whisper Transcribes] → [VoxCompose Refines] → [Polished Text]
 ```
-
-Whether you're using macOS PTT Dictation, Dragon, or any other speech-to-text system, VoxCompose ensures your technical vocabulary, proper nouns, and common patterns are correctly formatted.
 
 ### Core Capabilities
 
@@ -109,71 +114,19 @@ Refined text is returned in milliseconds, ready for use
 **Input:** "using nodejs with postgresql and redis"
 **Output:** "Using Node.js with PostgreSQL and Redis"
 
-## Quick Start
+## Using This Repository
 
-### Standalone Usage
+- Read the design docs under `docs/` for architecture, performance reasoning, self-learning strategy, and macOS integration concepts.
+- Use the examples below to understand the intended refinements and behavior.
+- There is no CLI here; installation, build, or binary usage is intentionally out of scope.
 
-```bash
-# Install via Homebrew
-brew tap cliffmin/tap
-brew install voxcompose
+## Configuration (Concept)
 
-# Test with sample transcript
-echo "i need to pushto github" | voxcompose
-# Output: "I need to push to GitHub"
-```
+The docs discuss potential configuration options for a future implementation. There is no live CLI in this repository.
 
-### With Voice Dictation (Recommended)
+## Capabilities (Concept)
 
-For the best experience, use VoxCompose with [macOS Push-to-Talk Dictation](https://github.com/cliffmin/macos-ptt-dictation):
-
-```bash
-# Install the complete voice-to-text pipeline
-brew install --cask hammerspoon
-brew install ffmpeg whisper-cpp
-brew install cliffmin/tap/voxcompose
-
-# Configure PTT to use VoxCompose for post-processing
-# See Integration section below for setup details
-```
-
-### With Local LLM (Optional)
-
-```bash
-# Install and start Ollama
-brew install ollama
-ollama serve &
-ollama pull llama3.1
-
-# Use with LLM refinement
-echo "long transcript text here" | voxcompose --model llama3.1
-```
-
-## Configuration
-
-### Command-Line Options
-
-```bash
-voxcompose [options]
-```
-
-| Option | Description | Default |
-|--------|-------------|---------|
-| `--model MODEL` | LLM model for refinement | `llama3.1` |
-| `--no-llm` | Skip LLM, use corrections only | `false` |
-| `--memory FILE` | Custom dictionary/preferences | `~/.voxcompose/memory.jsonl` |
-| `--duration SEC` | Input duration (affects processing) | Auto-detect |
-| `--out FILE` | Output to file instead of stdout | - |
-
-### Building Your Dictionary
-
-Create `~/.voxcompose/memory.jsonl`:
-
-```jsonl
-{"role": "user", "content": "Always capitalize: GitHub, PostgreSQL, TypeScript"}
-{"role": "user", "content": "Technical terms: API, REST, GraphQL, CI/CD"}
-{"role": "user", "content": "Common fixes: 'letme' -> 'let me', 'gonna' -> 'going to'"}
-```
+The docs describe a capabilities payload used for integration negotiation (e.g., “minimum duration” for LLM refinement). This is illustrative and not produced by code in this repo.
 
 ## 🔗 Integration with macOS PTT Dictation
 
@@ -194,153 +147,32 @@ graph LR
 3. **Refinement**: VoxCompose applies corrections and formatting
 4. **Insertion**: Polished text appears at your cursor position
 
-### Quick Setup
+### Quick Setup (Concept)
 
-#### Step 1: Install macos-ptt-dictation
+For conceptual integration with macOS Push-to-Talk Dictation, see docs/MACOS_PTT_INTEGRATION.md. This repository does not provide or install a CLI.
 
-```bash
-# Install the complete PTT system
-git clone https://github.com/cliffmin/macos-ptt-dictation.git
-cd macos-ptt-dictation
-./scripts/setup/install.sh
-```
+### Advanced Configuration (Concept)
 
-#### Step 2: Configure VoxCompose Integration
+Some docs describe memory files, dictionaries, and thresholds for discussion. Treat these as design references rather than instructions.
 
-Edit `~/.hammerspoon/ptt_config.lua`:
+### Troubleshooting (Concept)
 
-```lua
--- Enable VoxCompose as the post-processor
-LLM_REFINER = {
-  ENABLED = true,
-  -- If installed via Homebrew:
-  CMD = { "/usr/local/bin/voxcompose" },
-  -- Or if using JAR directly:
-  -- CMD = { "/usr/bin/java", "-jar", os.getenv("HOME") .. "/voxcompose.jar" },
-  ARGS = { 
-    "--model", "llama3.1",
-    "--duration", "{{DURATION}}",
-    "--memory", os.getenv("HOME") .. "/.config/voxcompose/memory.jsonl"
-  },
-}
-```
-
-#### Step 3: Reload Hammerspoon
-
-```bash
-# Apply configuration
-hs -c "hs.reload()"
-```
-
-### Advanced Configuration
-
-#### Custom Corrections Dictionary
-
-Create `~/.config/voxcompose/memory.jsonl` with your preferences:
-
-```jsonl
-{"role": "user", "content": "Always capitalize: GitHub, TypeScript, PostgreSQL"}
-{"role": "user", "content": "Technical terms: API, CI/CD, REST, GraphQL"}
-{"role": "user", "content": "Company names: OpenAI, Anthropic, Google"}
-```
-
-#### Performance Tuning
-
-```lua
--- For fastest response (corrections only, no LLM)
-LLM_REFINER = {
-  ENABLED = true,
-  CMD = { "/usr/local/bin/voxcompose" },
-  ARGS = { "--no-llm" },  -- Skip LLM, use corrections only
-}
-
--- For maximum accuracy (always use LLM)
-LLM_REFINER = {
-  ENABLED = true,
-  CMD = { "/usr/local/bin/voxcompose" },
-  ARGS = { 
-    "--model", "llama3.1",
-    "--force-llm"  -- Always apply LLM refinement
-  },
-}
-```
-
-### Troubleshooting Integration
-
-| Issue | Solution |
-|-------|----------|
-| VoxCompose not found | Ensure it's installed: `brew install cliffmin/tap/voxcompose` |
-| Ollama not running | Start Ollama: `ollama serve &` |
-| No corrections applied | Check memory file exists and is valid JSONL |
-| Slow processing | Use `--no-llm` flag for instant corrections only |
-
-For detailed PTT setup, see the [macos-ptt-dictation documentation](https://github.com/cliffmin/macos-ptt-dictation/blob/main/docs/setup/README.md).
+Operational troubleshooting is out of scope for this repository. For PTT setup background, see the [macos-ptt-dictation documentation](https://github.com/cliffmin/macos-ptt-dictation/blob/main/docs/setup/README.md).
 
 ## Testing
 
-```bash
-# Run test suite
-./tests/run_tests.sh
-
-# Validate self-learning
-./tests/validate_self_learning.sh
-
-# Generate performance metrics
-./tests/generate_metrics.sh
-```
+This repository includes lightweight scripts under `tests/` that validate documentation hygiene (no build files, updated README messaging). There are no unit/integration tests for code here.
 
 ## Documentation
 
 - [Performance Analysis](docs/PERFORMANCE.md) - Detailed benchmarks and optimization journey
-- [Self-Learning System](docs/SELF_LEARNING.md) - How the correction engine learns
+- [Self-Learning System](docs/SELF_LEARNING.md) - How the correction engine learns (includes data location and migration)
 - [Architecture](docs/ARCHITECTURE.md) - Technical design and implementation
 - [macOS Integration](docs/MACOS_PTT_INTEGRATION.md) - Push-to-talk dictation setup
 
-## 📦 Installation
+## Installation
 
-### Option 1: Homebrew (Recommended)
-
-```bash
-# Add the tap and install
-brew tap cliffmin/tap
-brew install voxcompose
-
-# Verify installation
-voxcompose --help
-```
-
-### Option 2: Build from Source
-
-```bash
-# Requirements: Java 11+, Ollama
-brew install openjdk@11 ollama gradle
-
-# Clone and build
-git clone https://github.com/cliffmin/voxcompose.git
-cd voxcompose
-./gradlew --no-daemon clean fatJar
-
-# Create alias for easy access (optional)
-alias voxcompose='java -jar $(pwd)/build/libs/voxcompose-0.1.0-all.jar'
-```
-
-### Option 3: Direct JAR Download
-
-```bash
-# Download the latest release JAR
-curl -L https://github.com/cliffmin/voxcompose/releases/latest/download/voxcompose-0.3.0-all.jar \
-  -o voxcompose.jar
-
-# Run directly
-java -jar voxcompose.jar --help
-```
-
-
-## Requirements
-
-- macOS 10.15+ or Linux
-- Java 11 or later
-- Optional: Ollama for LLM refinement
+Not applicable. This repository does not distribute binaries or a build system.
 
 ## Contributing
 
@@ -348,16 +180,12 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ### Development Setup
 
+Clone the repository and browse the docs:
+
 ```bash
-# Clone the repository
 git clone https://github.com/cliffmin/voxcompose.git
 cd voxcompose
-
-# Build the project
-./gradlew build
-
-# Run tests
-./gradlew test
+ls docs
 ```
 
 ## License
@@ -374,7 +202,7 @@ MIT - See [LICENSE](LICENSE) for details.
 
 ## Project Achievements
 
-### v0.3.0 Performance Milestones
+### Performance Milestones (Concept)
 
 | Metric | Before | After | Improvement |
 |--------|--------|-------|-------------|
@@ -393,4 +221,4 @@ MIT - See [LICENSE](LICENSE) for details.
 
 ## Changelog
 
-See [CHANGELOG.md](CHANGELOG.md) for a detailed history of changes.
+See [CHANGELOG.md](CHANGELOG.md) for a history of document changes.

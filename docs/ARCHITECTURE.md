@@ -38,6 +38,7 @@ VoxCompose is a high-performance, privacy-focused transcription refinement syste
 - Environment variable support
 - Command-line argument parsing
 - Default value management
+ - Default memory path fallback to `~/.config/voxcompose/memory.jsonl` when `--memory` is not provided and the file exists
 
 ```java
 // Configuration precedence
@@ -51,6 +52,7 @@ CLI Arguments > Environment Variables > Defaults
 - Real-time string replacement
 - Context-aware processing
 - Zero-allocation design
+ - Applies user dictionaries from `~/.voxcompose/dictionaries` (built-ins are installed on first run)
 
 ```
 Performance Characteristics:
@@ -147,12 +149,21 @@ Input → Corrections → LLM Refinement → Output
 
 ### File System Layout
 
+Preferred (XDG data/macOS Application Support):
 ```
-~/.config/voxcompose/
+$XDG_DATA_HOME/voxcompose/
+# macOS fallback: ~/Library/Application Support/VoxCompose/
+# Linux fallback: ~/.local/share/voxcompose/
 ├── learned_profile.json    # User learning data
-├── cache/                   # Response cache
+├── cache/                  # Response cache
 │   └── entries/            # Cached refinements
 └── logs/                   # Application logs
+```
+
+Legacy (pre-migration):
+```
+~/.config/voxcompose/
+├── learned_profile.json
 ```
 
 ### Profile Schema

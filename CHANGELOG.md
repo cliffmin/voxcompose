@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## Unreleased
 
+### Changed
+- Learning profile location migrated to data directory precedence (VOXCOMPOSE_DATA_DIR > XDG_DATA_HOME/voxcompose > macOS Application Support > ~/.local/share/voxcompose). Legacy `~/.config/voxcompose/learned_profile.json` is no longer read by tools; use the migration script.
+- Added tools/migrate_learning_data.sh to safely move profiles.
+- Updated tools/show_learning_data.sh and tools/show_learning.py to resolve new location only, with clear migration guidance.
+- Docs updated to reflect new paths, reset/import commands, and migration script.
+
 ### 🧠 Self-Learning Corrections System
 - **Automatic error correction without LLM**:
   - 100% correction rate for word concatenations (pushto → push to, committhis → commit this)
