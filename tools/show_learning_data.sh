@@ -147,6 +147,116 @@ if 'metadata' in data:
 # Display summary statistics
 display_section "stats" "📊 Learning Statistics" "stats"
 
+# Growth metrics via Python helper (handles state and timestamps)
+python3 - <<'PY'
+import sys, json, os, platform
+from pathlib import Path
+from datetime import datetime, timezone, timedelta
+
+# Reuse same data dir resolution
+override=os.getenv('VOXCOMPOSE_DATA_DIR')
+if override:
+    data_dir=Path(override)
+elif os.getenv('XDG_DATA_HOME'):
+    data_dir=Path(os.environ['XDG_DATA_HOME'])/'voxcompose'
+elif platform.system()=='Darwin':
+    data_dir=Path.home()/'Library'/'Application Support'/'VoxCompose'
+else:
+    data_dir=Path.home()/'.local'/'share'/'voxcompose'
+
+profile=data_dir/'learned_profile.json'
+state_dir=(data_dir/'state') if platform.system()=='Darwin' else (Path.home()/'.local'/'state'/'voxcompose')
+if os.getenv('XDG_STATE_HOME'):
+    state_dir=Path(os.environ['XDG_STATE_HOME'])/'voxcompose'
+if os.getenv('VOXCOMPOSE_STATE_DIR'):
+    state_dir=Path(os.environ['VOXCOMPOSE_STATE_DIR'])
+
+with open(profile,'r') as f:
+    d=json.load(f)
+
+wc=set((d.get('wordCorrections') or {}).keys())
+cap=set((d.get('capitalizations') or {}).keys())
+vocab=set((d.get('technicalVocabulary') or []))
+pat=set((d.get('phrasePatterns') or {}).keys())
+
+now=datetime.now(timezone.utc)
+state_file=state_dir/'viewer_state.json'
+state={}
+if state_file.exists():
+    try:
+        state=json.loads(state_file.read_text())
+    except Exception:
+        state={}
+
+entries=state.setdefault('entries',{
+    'wordCorrections':{},'capitalizations':{},'technicalVocabulary':{},'phrasePatterns':{}
+})
+
+def reg(cat, keys):
+    iso=now.isoformat()
+    fs=entries.setdefault(cat,{})
+    new=[]
+    for k in keys:
+        if k not in fs:
+            fs[k]=iso
+            new.append(k)
+    return new
+
+nw=reg('wordCorrections',wc)
+nc=reg('capitalizations',cap)
+nv=reg('technicalVocabulary',vocab)
+np=reg('phrasePatterns',pat)
+
+cut=lambda days: now - timedelta(days=days)
+
+def count_window(cat, days):
+    c=0
+    for ts in entries.get(cat,{}).values():
+        if ts.endswith('Z'):
+            ts=ts[:-1]+"+00:00"
+        try:
+            dt=datetime.fromisoformat(ts)
+        except Exception:
+            continue
+        if dt>=cut(days): c+=1
+    return c
+
+added_today={
+    'wc':count_window('wordCorrections',1),
+    'cap':count_window('capitalizations',1),
+    'vocab':count_window('technicalVocabulary',1),
+    'pat':count_window('phrasePatterns',1),
+}
+added_week={
+    'wc':count_window('wordCorrections',7),
+    'cap':count_window('capitalizations',7),
+    'vocab':count_window('technicalVocabulary',7),
+    'pat':count_window('phrasePatterns',7),
+}
+
+snapshots=state.setdefault('snapshots',[])
+base_total=snapshots[0]['counts']['total'] if snapshots else (len(wc)+len(cap)+len(vocab)+len(pat))
+snapshots.append({'ts':now.isoformat(),'counts':{'wc':len(wc),'cap':len(cap),'vocab':len(vocab),'pat':len(pat),'total':len(wc)+len(cap)+len(vocab)+len(pat)}})
+state['last_run']=now.isoformat()
+state_dir.mkdir(parents=True,exist_ok=True)
+state_file.write_text(json.dumps(state,indent=2))
+
+print('\n\033[1m\033[0;36m📈 Growth & Recent Additions\033[0m')
+print('────────────────────────────────────────────────────────────')
+print(f"  Added today (24h):     wc={added_today['wc']}  cap={added_today['cap']}  vocab={added_today['vocab']}  patterns={added_today['pat']}")
+print(f"  Added last 7 days:     wc={added_week['wc']}  cap={added_week['cap']}  vocab={added_week['vocab']}  patterns={added_week['pat']}")
+print(f"  Growth since tracking: +{(len(wc)+len(cap)+len(vocab)+len(pat))-base_total} total items")
+if any([nw,nc,nv,np]):
+    def sample(name, items):
+        if items:
+            print(f"  New {name} this run ({len(items)}): "+', '.join(list(items)[:10]))
+    sample('word corrections', nw)
+    sample('capitalizations', nc)
+    sample('vocabulary terms', nv)
+    sample('phrase patterns', np)
+print(f"  State: {state_file}")
+PY
+
 # Display word corrections
 display_section "wordCorrections" "📝 Word Corrections" "map"
 
