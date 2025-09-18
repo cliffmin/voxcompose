@@ -1,5 +1,8 @@
 # VoxCompose Self-Learning System
 
+> Conceptual Reference
+> This repository is documentation-only. The examples and commands shown here are illustrative of a potential implementation and are not runnable from this repository.
+
 ## Overview
 
 VoxCompose's self-learning system represents a breakthrough in transcription accuracy, automatically learning from your speech patterns and vocabulary to deliver personalized, instant corrections without requiring cloud services or manual configuration.
@@ -210,33 +213,28 @@ Automatically adapts to your field:
 - **Technical**: Learns programming vocabulary
 - **Business**: Learns corporate jargon
 
-### 3. Multi-User Profiles
+### 3. Multi-User Profiles (Concept)
 
-Support for multiple users on the same machine:
-```bash
-# Switch profiles
-export VOX_PROFILE=work
-voxcompose # Uses work profile
-
-export VOX_PROFILE=personal  
-voxcompose # Uses personal profile
+Illustrative example of how a future CLI might switch profiles:
+```
+# Switch profiles (example)
+VOX_PROFILE=work   voxcompose
+VOX_PROFILE=personal  voxcompose
 ```
 
 ## Configuration
 
-### View Learning Statistics
+### View Learning Statistics (Concept)
 
-```bash
-java -jar voxcompose.jar --show-stats
-
-# Output:
+Illustrative output a future CLI could emit:
+```
 Corrections learned: 247
 Accuracy improvement: 75%
 Profile age: 14 days
 Most common corrections:
-  - pushto → push to (42 times)
-  - github → GitHub (38 times)
-  - json → JSON (31 times)
+  - pushto → push to (42)
+  - github → GitHub (38)
+  - json → JSON (31)
 ```
 
 ### Reset Learning
@@ -359,4 +357,4 @@ The result is a transcription refinement system that gets better every time you 
 
 ---
 
-*Self-learning metrics validated on 2025-09-16 using VoxCompose v0.3.0*
+*Example self-learning metrics for illustration (2025-09-16)*

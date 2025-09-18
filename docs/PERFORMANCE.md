@@ -1,8 +1,11 @@
 # VoxCompose Performance Improvements
 
+> Conceptual Reference
+> This document presents example performance narratives and metrics for discussion. This repository is documentation-only and does not include a runnable CLI; numbers below are illustrative.
+
 ## Executive Summary
 
-VoxCompose v0.3.0 introduces revolutionary performance improvements that reduce processing time by **92%** for short inputs while maintaining **100% accuracy** on technical corrections. These improvements make real-time transcription refinement practical for daily use.
+Example performance improvements reduce processing time by up to **92%** for short inputs while maintaining high accuracy on technical corrections. These examples show how real-time transcription refinement could be made practical.
 
 ## Key Achievements
 
@@ -190,4 +193,4 @@ These improvements make VoxCompose the fastest, most accurate local transcriptio
 
 ---
 
-*Performance metrics validated on 2025-09-16 using VoxCompose v0.3.0*
+*Example metrics for illustration (2025-09-16); not from a shipped product*
