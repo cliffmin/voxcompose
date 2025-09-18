@@ -1,5 +1,8 @@
 # VoxCompose Architecture
 
+> Conceptual Reference
+> This repository is documentation-only. Commands and examples in this file are illustrative and do not correspond to a runnable CLI in this repo. Any version numbers or metrics are examples for discussion.
+
 ## System Overview
 
 VoxCompose is a high-performance, privacy-focused transcription refinement system built with a modular Java architecture that enables real-time correction and optional LLM enhancement.
@@ -297,13 +300,15 @@ tests/
 - **Accuracy**: Error rate reduction
 - **Resource Usage**: CPU, memory, I/O
 
-### Benchmarking
+### Benchmarking (Concept)
 
-```bash
-# Run performance benchmarks
-./tests/generate_metrics.sh
+```
+Process (example):
+1) Prepare fixtures
+2) Run correction pipeline on short vs long inputs
+3) Collect timings and accuracy metrics
 
-# Results stored in metrics.json
+Illustrative results:
 {
   "avgCorrectionTime": 142,
   "errorReduction": 75,
@@ -313,17 +318,17 @@ tests/
 
 ## Deployment Architecture
 
-### Standalone JAR
+### Example Packaging Layout (Concept)
 
 ```
-voxcompose-0.3.0-all.jar
+voxcompose-<version>-all.jar (example)
 ├── Application classes
 ├── Dependencies (shaded)
 ├── Resources
 └── Manifest
 ```
 
-### System Requirements
+### Example System Requirements (Concept)
 
 - **Java**: 17+ (OpenJDK or Oracle)
 - **Memory**: 512MB minimum
@@ -357,4 +362,4 @@ VoxCompose's architecture prioritizes performance, privacy, and extensibility. T
 
 ---
 
-*Architecture documented for VoxCompose v0.3.0*
+*Conceptual architecture reference (examples and versions are illustrative)*

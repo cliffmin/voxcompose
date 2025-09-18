@@ -1,5 +1,8 @@
 # VoxCompose Long-Term CLI Integration Plan
 
+> Conceptual Reference
+> This plan outlines a potential future CLI. This repository is documentation-only and does not include an implementation.
+
 Status: Draft
 Author: VoxCompose maintainers
 Date: 2025-09-18

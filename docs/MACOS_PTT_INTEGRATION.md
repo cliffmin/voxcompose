@@ -1,24 +1,25 @@
 # macOS PTT Dictation Integration Guide
 
+> Conceptual Reference
+> This repository is documentation-only. The commands and Lua examples in this guide illustrate a potential integration and are not runnable from this repository.
+
 ## Overview
 VoxCompose now supports duration-aware refinement, allowing macos-ptt-dictation to optimize when LLM refinement is triggered based on audio duration.
 
 ## Key Features
 
 ### 1. Duration Threshold Support
-VoxCompose can now receive audio duration and skip LLM refinement for short clips:
-```bash
-# Short clip (10s) - only corrections applied, no LLM
-echo "transcript" | java -jar voxcompose.jar --duration 10
-
-# Long clip (30s) - full LLM refinement
-echo "transcript" | java -jar voxcompose.jar --duration 30
+VoxCompose (concept) can receive audio duration and skip LLM refinement for short clips:
+```
+# Example (concept):
+echo "transcript" | voxcompose --duration 10
+echo "long transcript" | voxcompose --duration 30
 ```
 
 ### 2. Capabilities Negotiation
-Query VoxCompose for its current settings:
-```bash
-java -jar voxcompose.jar --capabilities
+Query VoxCompose for its current settings (concept):
+```
+voxcompose --capabilities
 ```
 
 Returns:
@@ -41,14 +42,14 @@ VoxCompose learns from refinements and applies corrections even when LLM is skip
 
 ## Integration in ptt_config.lua
 
-Update your Hammerspoon configuration to pass duration:
+Update your Hammerspoon configuration to pass duration (concept):
 
 ```lua
 -- In macos-ptt-dictation/hammerspoon/ptt_config.lua
 
 -- Query VoxCompose capabilities on startup
 function getVoxComposeCapabilities()
-    local handle = io.popen("java -jar " .. VOXCOMPOSE_JAR .. " --capabilities 2>/dev/null")
+    local handle = io.popen("/usr/local/bin/voxcompose --capabilities 2>/dev/null")
     local result = handle:read("*a")
     handle:close()
     
@@ -65,11 +66,7 @@ end
 
 -- When calling VoxCompose, pass the duration
 function refineTranscript(text, duration_seconds)
-    local cmd = {
-        "/usr/bin/java", "-jar", VOXCOMPOSE_JAR,
-        "--model", "llama3.1",
-        "--duration", tostring(math.floor(duration_seconds))  -- Add duration
-    }
+    local cmd = { "/usr/local/bin/voxcompose", "--duration", tostring(math.floor(duration_seconds)) }
     
     -- VoxCompose will automatically decide whether to use LLM
     -- based on duration and learned patterns
@@ -94,18 +91,11 @@ end
 
 Test the integration with different durations:
 
-```bash
-# Test short clip (corrections only)
-echo "i wanna pushto github" | java -jar voxcompose.jar --duration 10
-# Output: "I wanna push to GitHub"
-
-# Test long clip (full refinement)
-echo "long transcript here..." | java -jar voxcompose.jar --duration 30
-# Output: Fully refined markdown
-
-# Check current threshold
-java -jar voxcompose.jar --capabilities | jq '.activation.long_form.min_duration'
-# Output: 21
+```
+# Examples (concept)
+echo "i wanna pushto github" | voxcompose --duration 10
+echo "long transcript here..." | voxcompose --duration 30
+voxcompose --capabilities | jq '.activation.long_form.min_duration'
 ```
 
 ### Monitoring & Debugging

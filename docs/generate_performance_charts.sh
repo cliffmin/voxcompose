@@ -122,10 +122,10 @@ Test Suite: ./tests/run_tests.sh
 ├─ Error Reduction Validation:    PASS (75% fewer errors)
 └─ Throughput Test:              PASS (>1,200 words/sec)
 
-Generated: 2025-09-16
-Version: VoxCompose v0.3.0
-Hardware: MacBook Pro M1
-Dataset: 1,000 real-world transcriptions
+Generated: 2025-09-16 (example)
+Version: VoxCompose (Concept)
+Hardware: Example hardware profile
+Dataset: Example dataset description
 
 ================================================================================
 EOF
