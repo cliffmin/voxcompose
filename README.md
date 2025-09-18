@@ -246,7 +246,7 @@ VoxCompose is part of the open source VoiceCore ecosystem. Contributions welcome
 - **Enterprise Features**: Team collaboration and organizational intelligence
 - **Integration Development**: Connections with productivity and development ecosystems
 
-See [VoiceCore Platform Development](../macos-ptt-dictation/docs/development/) for contribution guidelines.
+See [VoiceCore Platform Development](https://github.com/cliffmin/voxcore/tree/main/docs/development) for contribution guidelines.
 
 ## License
 
