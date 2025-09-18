@@ -42,7 +42,7 @@ Notes
 - Performance: docs/PERFORMANCE.md
 - Learning system: docs/SELF_LEARNING.md
 - macOS PTT integration: docs/MACOS_PTT_INTEGRATION.md
-- Long-term CLI plan: docs/LONG_TERM_CLI_INTEGRATION.md
+- [Long-Term CLI Integration Plan](docs/LONG_TERM_CLI_INTEGRATION.md)
 - Enterprise deployment: docs/ENTERPRISE.md
 - API reference: docs/API.md
 
