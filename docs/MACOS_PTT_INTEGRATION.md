@@ -119,9 +119,13 @@ export VOX_DEBUG=1
 python3 tools/show_learning.py --json | jq '.'
 
 # Optional: enable learning updates without a full CLI (transparent pass-through)
-# Add this to your post-processing chain to update learning on every transcript:
+# Option A (tee background):
 #   ... | tee >(python3 /Users/$(whoami)/code/voxcompose/tools/learn_from_text.py >/dev/null)
-# This sends the transcript to the learner (background) while continuing the normal flow.
+# Option B (explicit pass-through helper):
+#   ... | /Users/$(whoami)/code/voxcompose/tools/learn_passthrough.sh
+# Option C (shim CLI):
+#   ... | /Users/$(whoami)/code/voxcompose/cli/voxcompose --stats
+# All options keep Lua simple and push logic into scripts/clients.
 ```
 
 ## Migration Notes

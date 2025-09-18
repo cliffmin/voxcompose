@@ -1,3 +1,7 @@
+# CLI build artifacts (future)
+cli/build/
+cli/.gradle/
+
 # Java
 /build/
 /.gradle/

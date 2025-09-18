@@ -1,0 +1,82 @@
+#!/usr/bin/env bash
+# VoxCompose CLI (temporary shim)
+# Reads stdin, writes corrected text to stdout (currently pass-through),
+# and updates learning unless --learn off or --dry-run is set.
+# Flags:
+#   --duration <seconds>
+#   --data-dir <path>
+#   --state-dir <path>
+#   --profile <name>
+#   --learn <on|off> (default on)
+#   --dry-run
+#   --stats
+#   --help
+set -euo pipefail
+
+LEARN=on
+DRYRUN=0
+DURATION=""
+DATA_DIR=""
+STATE_DIR=""
+PROFILE=""
+STATS=0
+
+# Parse args
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --duration)
+      shift; DURATION="${1:-}" ;;
+    --data-dir)
+      shift; DATA_DIR="${1:-}" ;;
+    --state-dir)
+      shift; STATE_DIR="${1:-}" ;;
+    --profile)
+      shift; PROFILE="${1:-}" ;;
+    --learn)
+      shift; LEARN="${1:-}" ;;
+    --dry-run)
+      DRYRUN=1 ;;
+    --stats)
+      STATS=1 ;;
+    --help|-h)
+      cat <<USAGE
+voxcompose [OPTIONS]
+  --duration <seconds>
+  --data-dir <path>
+  --state-dir <path>
+  --profile <name>
+  --learn <on|off> (default on)
+  --dry-run
+  --stats
+USAGE
+      exit 0 ;;
+    *)
+      echo "Unknown option: $1" >&2; exit 2 ;;
+  esac
+  shift || true
+done
+
+# Export overrides for learner
+[[ -n "$DATA_DIR" ]] && export VOXCOMPOSE_DATA_DIR="$DATA_DIR"
+[[ -n "$STATE_DIR" ]] && export VOXCOMPOSE_STATE_DIR="$STATE_DIR"
+
+SCRIPT_DIR=$(cd "$(dirname "$0")" && pwd)
+TMP=$(mktemp)
+trap 'rm -f "$TMP"' EXIT
+
+# Read stdin fully
+cat >"$TMP"
+
+# Pass-through output (no transformation yet)
+cat "$TMP"
+
+# Learning side-effect
+if [[ "$LEARN" == "on" && $DRYRUN -eq 0 ]]; then
+  cat "$TMP" | python3 "$SCRIPT_DIR/../tools/learn_from_text.py" >/dev/null || true
+fi
+
+# Emit simple stats if requested (future: richer JSON from Java CLI)
+if [[ $STATS -eq 1 ]]; then
+  LEN=$(wc -c < "$TMP" | tr -d ' ')
+  echo "{\"duration\": ${DURATION:-0}, \"bytes\": $LEN, \"learn\": \"$LEARN\", \"dry_run\": $DRYRUN}" >&2
+fi

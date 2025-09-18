@@ -42,6 +42,11 @@
 **Put here**: Homebrew formulas, package templates  
 **Don't put**: Built artifacts, temporary scripts
 
+#### `/cli/`
+**Purpose**: Runnable client entrypoints and shims  
+**Put here**: CLI scripts or binaries (temporary Bash shim or long-term Java CLI)  
+**Don't put**: Extensive business logic (keep logic in the client, not in Lua/Hammerspoon)
+
 ## Decision Framework: Should I Create This?
 
 ### Quick Decision Tree

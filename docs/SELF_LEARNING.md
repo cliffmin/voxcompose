@@ -169,7 +169,7 @@ Improvement: 92% faster for common corrections
 
 ### Storage Location
 
-Note on transparent learning hook
+Note on transparent learning hook and CLI shim
 - If you’re integrating with macOS PTT and want immediate learning without a full CLI, you can feed transcripts into the minimal learner:
   - ... | tee >(python3 /Users/$(whoami)/code/voxcompose/tools/learn_from_text.py >/dev/null)
 - This updates learned_profile.json under the new data dir precedence.
