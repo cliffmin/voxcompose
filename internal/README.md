@@ -11,5 +11,11 @@ Guidelines
 - Avoid storing secrets in plain text; reference vault/secret managers instead.
 - When possible, prefer a private repository or company wiki for sensitive materials.
 
-Currently, no files have been moved here because the repository contains only public-facing documentation. Add internal docs here as needed.
+Index
+- ARCHITECTURE_EVOLUTION.md — VoxCompose integration evolution (shim → CLI → Brew)
+
+Guidelines
+- Treat contents as confidential. Do not publish or share externally.
+- Avoid storing secrets in plain text; reference vault/secret managers instead.
+- When possible, prefer a private repository or company wiki for sensitive materials.
 
