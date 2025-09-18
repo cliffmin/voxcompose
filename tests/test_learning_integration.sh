@@ -19,6 +19,12 @@ echo "$SAMPLE" | tee >(python3 tools/learn_from_text.py >/dev/null) >/dev/null |
 
 PROFILE="$VOXCOMPOSE_DATA_DIR/learned_profile.json"
 
+# Wait briefly for the background process substitution to write the profile
+for i in {1..30}; do
+  [[ -f "$PROFILE" ]] && break
+  sleep 0.1
+done
+
 # Assert the profile was created
 if [[ ! -f "$PROFILE" ]]; then
   fail "learned_profile.json not created at expected path: $PROFILE"
