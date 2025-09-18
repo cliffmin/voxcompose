@@ -7,6 +7,7 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 ## Unreleased
 
 ### Added
+- Minimal learning hook (tools/learn_from_text.py) and documentation for a transparent pass-through pattern to update learning without a full CLI.
 - Long-Term CLI Integration plan (docs/LONG_TERM_CLI_INTEGRATION.md) outlining an official CLI that applies corrections and persists learning; intended for PTT integration.
 
 ### Changed

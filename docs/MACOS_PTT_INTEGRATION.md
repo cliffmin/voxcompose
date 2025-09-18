@@ -117,6 +117,11 @@ export VOX_DEBUG=1
 
 # Check learned corrections (new location precedence)
 python3 tools/show_learning.py --json | jq '.'
+
+# Optional: enable learning updates without a full CLI (transparent pass-through)
+# Add this to your post-processing chain to update learning on every transcript:
+#   ... | tee >(python3 /Users/$(whoami)/code/voxcompose/tools/learn_from_text.py >/dev/null)
+# This sends the transcript to the learner (background) while continuing the normal flow.
 ```
 
 ## Migration Notes
