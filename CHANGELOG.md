@@ -6,6 +6,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## Unreleased
 
+### Added
+- Long-Term CLI Integration plan (docs/LONG_TERM_CLI_INTEGRATION.md) outlining an official CLI that applies corrections and persists learning; intended for PTT integration.
+
 ### Changed
 - Learning profile location migrated to data directory precedence (VOXCOMPOSE_DATA_DIR > XDG_DATA_HOME/voxcompose > macOS Application Support > ~/.local/share/voxcompose). Legacy `~/.config/voxcompose/learned_profile.json` is no longer read by tools; use the migration script.
 - Added tools/migrate_learning_data.sh to safely move profiles.
