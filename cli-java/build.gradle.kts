@@ -1,6 +1,7 @@
 plugins {
     application
     java
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 group = "com.voxcompose"
@@ -29,4 +30,16 @@ tasks.test {
 
 application {
     mainClass.set("com.voxcompose.cli.Main")
+}
+
+// Configure fat JAR (shadow) for distribution
+import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+
+tasks.named<ShadowJar>("shadowJar") {
+    archiveClassifier.set("all")
+}
+
+// Convenience alias
+tasks.register("fatJar") {
+    dependsOn("shadowJar")
 }
