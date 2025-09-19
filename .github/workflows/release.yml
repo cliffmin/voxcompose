@@ -28,7 +28,7 @@ jobs:
       - name: Upload release assets
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            cli-java/build/libs/voxcompose-cli-all.jar
+files: |
+            cli-java/build/libs/*-all.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
