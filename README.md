@@ -81,7 +81,36 @@ Performance tactics:
 - Analytics & Insights: Accuracy, throughput, improvement rates
 - Compliance Controls: Enterprise privacy and retention policies
 
-## Documentation
+## Using the Java CLI
+
+Quickstart
+
+```bash
+TMP=$(mktemp -d)
+echo "i need to pushto github and update the json api" | \
+  java -jar cli-java/build/libs/voxcompose-cli-all.jar --data-dir "$TMP" --stats
+```
+
+- Input is echoed to stdout unchanged
+- learned_profile.json is written under $TMP with essential caps and splits
+- --stats emits a JSON line to stderr with basic metrics
+
+Data directory precedence
+- VOXCOMPOSE_DATA_DIR
+- $XDG_DATA_HOME/voxcompose
+- macOS: ~/Library/Application Support/VoxCompose
+- Linux: ~/.local/share/voxcompose
+
+Integration (PTT/Hammerspoon) example
+```bash
+# Wrapper script example
+voxcompose() {
+  local jar="$HOME/.local/share/voxcompose/voxcompose-cli-all.jar"
+  java -jar "$jar" "$@"
+}
+```
+
+## Documentation & Resources
 
 - Intelligence Architecture: `docs/ARCHITECTURE.md`
 - Performance Analysis: `docs/PERFORMANCE.md`
