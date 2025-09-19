@@ -1,5 +1,12 @@
 # Changelog
 
+## [Unreleased]
+- Java CLI (Gradle) scaffolding under cli-java with unit tests and CI
+- Fat JAR build via Shadow plugin; tag-based release workflow publishes artifact
+- Added Integration Tests workflow to satisfy protected branch check
+- Internal doc: CLI_MIGRATION_BEFORE_AFTER.md
+- Release guide: docs/RELEASE.md
+
 All notable changes to this project will be documented in this file.
 
 The format is based on Keep a Changelog, and this project adheres to Semantic Versioning.
