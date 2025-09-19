@@ -12,10 +12,11 @@ Guidelines
 - When possible, prefer a private repository or company wiki for sensitive materials.
 
 Index
-- ARCHITECTURE_EVOLUTION.md — VoxCompose integration evolution (shim → CLI → Brew)
-
-Guidelines
-- Treat contents as confidential. Do not publish or share externally.
-- Avoid storing secrets in plain text; reference vault/secret managers instead.
-- When possible, prefer a private repository or company wiki for sensitive materials.
+- docs/ARCHITECTURE_EVOLUTION.md — VoxCompose integration evolution (shim → CLI → Brew)
+- docs/ARCHITECTURE.md — System architecture
+- docs/PERFORMANCE.md — Historical performance notes
+- docs/SELF_LEARNING.md — Learning system details
+- docs/MACOS_PTT_INTEGRATION.md — PTT integration notes
+- docs/LONG_TERM_CLI_INTEGRATION.md — Original CLI plan (historical)
+- docs/DEVELOPMENT_GUIDE.md — Project structure and contributor guidance
 
