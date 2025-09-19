@@ -96,8 +96,8 @@
 1. **Measure**: Run `/tests/generate_metrics.sh` for baseline
 2. **Optimize**: Make changes (usually in `cache/` or `memory/`)
 3. **Verify**: Re-run metrics, compare results
-4. **Document**: Update `/docs/PERFORMANCE.md` with findings
-5. **Graph**: Generate visual with `/docs/generate_performance_charts.sh`
+4. **Document**: Update `internal/PERFORMANCE.md` with findings
+5. **Graph**: Generate visual with `internal/tools/generate_performance_charts.sh`
 
 ## Best Practices Checklist
 
