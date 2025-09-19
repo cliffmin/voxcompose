@@ -112,11 +112,12 @@ voxcompose() {
 
 ## Documentation & Resources
 
-- Intelligence Architecture: `docs/ARCHITECTURE.md`
-- Performance Analysis: `docs/PERFORMANCE.md`
-- Learning System: `docs/SELF_LEARNING.md`
-- macOS Integration Concepts: `docs/MACOS_PTT_INTEGRATION.md`
-- Long-Term CLI Integration Plan: `docs/LONG_TERM_CLI_INTEGRATION.md`
+- **[Intelligence Architecture](docs/ARCHITECTURE.md)** - Technical design and implementation details
+- **[Performance Analysis](docs/PERFORMANCE.md)** - Detailed optimization journey and benchmarks
+- **[Learning System](docs/SELF_LEARNING.md)** - Adaptive intelligence and improvement algorithms
+- **[macOS Integration](docs/MACOS_PTT_INTEGRATION.md)** - Push-to-talk dictation setup and integration
+- **[Long-Term CLI Integration Plan](docs/LONG_TERM_CLI_INTEGRATION.md)** - Draft plan for an official CLI and PTT integration
+- Manual Learning Validation: scripts/manual_learning_test.sh - Verify end-to-end learning locally
 
 ## Using This Repository
 
@@ -133,6 +134,9 @@ Improvements or clarifications to the documentation are welcome.
 - See `CONTRIBUTING.md` for contribution guidelines.
 - See `CODE_OF_CONDUCT.md` for community standards.
 - See `SECURITY.md` for vulnerability reporting.
+
+See VoiceCore Platform Development for contribution guidelines:
+- https://github.com/cliffmin/voxcore/tree/main/docs/development
 
 ## License
 

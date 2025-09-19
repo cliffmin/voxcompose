@@ -1,0 +1,15 @@
+name: Integration Tests
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run test suite
+        shell: bash
+        run: |
+          chmod +x tests/run_tests.sh
+          bash tests/run_tests.sh
