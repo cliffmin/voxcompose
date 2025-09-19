@@ -33,9 +33,10 @@ application {
 }
 
 // Configure fat JAR (shadow) for distribution
-import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
+// Avoid imports in Kotlin DSL by fully qualifying the ShadowJar task type
 
-tasks.named<ShadowJar>("shadowJar") {
+// Configure all ShadowJar tasks (provided by the shadow plugin)
+tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>().configureEach {
     archiveClassifier.set("all")
 }
 

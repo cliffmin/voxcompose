@@ -116,7 +116,7 @@ voxcompose() {
 - Performance Analysis: `docs/PERFORMANCE.md`
 - Learning System: `docs/SELF_LEARNING.md`
 - macOS Integration Concepts: `docs/MACOS_PTT_INTEGRATION.md`
-- Long‑Term CLI Plan: `docs/LONG_TERM_CLI_INTEGRATION.md`
+- Long-Term CLI Integration Plan: `docs/LONG_TERM_CLI_INTEGRATION.md`
 
 ## Using This Repository
 
