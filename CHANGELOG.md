@@ -5,7 +5,7 @@
 - Fat JAR build via Shadow plugin; tag-based release workflow publishes artifact
 - Added Integration Tests workflow to satisfy protected branch check
 - Internal doc: CLI_MIGRATION_BEFORE_AFTER.md
-- Release guide: docs/RELEASE.md
+- Release guide: RELEASE.md
 
 All notable changes to this project will be documented in this file.
 
