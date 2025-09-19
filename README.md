@@ -118,6 +118,8 @@ voxcompose() {
 - **[macOS Integration](docs/MACOS_PTT_INTEGRATION.md)** - Push-to-talk dictation setup and integration
 - **[Long-Term CLI Integration Plan](docs/LONG_TERM_CLI_INTEGRATION.md)** - Draft plan for an official CLI and PTT integration
 - Manual Learning Validation: scripts/manual_learning_test.sh - Verify end-to-end learning locally
+- Release Guide: `RELEASE.md`
+- CHANGELOG: `CHANGELOG.md`
 
 ## Using This Repository
 
