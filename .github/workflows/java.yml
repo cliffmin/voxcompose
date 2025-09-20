@@ -5,24 +5,47 @@ on:
     branches: [ main ]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     name: Java CLI
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Determine changed paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs_only:
+              - '**/*.md'
+              - 'docs/**'
+
       - name: Set up JDK 17
+        if: ${{ steps.changes.outputs.docs_only != 'true' }}
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: '17'
+
       - name: Install Gradle via SDKMAN
+        if: ${{ steps.changes.outputs.docs_only != 'true' }}
         run: |
           curl -s "https://get.sdkman.io" | bash
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           sdk install gradle 8.7
           gradle -v
+
       - name: Build and Test (cli-java)
+        if: ${{ steps.changes.outputs.docs_only != 'true' }}
         run: |
           source "$HOME/.sdkman/bin/sdkman-init.sh"
           gradle -p cli-java test --no-daemon --stacktrace
+
+      - name: Skip heavy Java build for docs-only PR
+        if: ${{ steps.changes.outputs.docs_only == 'true' }}
+        run: echo "Docs-only changes detected; skipping Java build/tests."

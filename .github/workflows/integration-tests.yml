@@ -5,12 +5,31 @@ on:
     branches: [ main ]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   integration:
     name: Integration Tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Determine changed paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs_only:
+              - '**/*.md'
+              - 'docs/**'
+
       - name: Run integration tests
+        if: ${{ steps.changes.outputs.docs_only != 'true' }}
         run: |
           bash tests/run_tests.sh
+
+      - name: Skip integration tests for docs-only changes
+        if: ${{ steps.changes.outputs.docs_only == 'true' }}
+        run: echo "Docs-only changes detected; skipping integration tests."
