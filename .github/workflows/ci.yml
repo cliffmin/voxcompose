@@ -3,13 +3,33 @@ on:
   pull_request:
   push:
     branches: [ main ]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Determine changed paths
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            docs_only:
+              - '**/*.md'
+              - 'docs/**'
+
       - name: Run test suite
+        if: ${{ steps.changes.outputs.docs_only != 'true' }}
         shell: bash
         run: |
           chmod +x tests/run_tests.sh
           bash tests/run_tests.sh
+
+      - name: Skip heavy tests for docs-only changes
+        if: ${{ steps.changes.outputs.docs_only == 'true' }}
+        run: echo "Docs-only changes detected; skipping tests."
