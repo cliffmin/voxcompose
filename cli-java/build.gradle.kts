@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.voxcompose"
-version = "0.4.1"
+version = "0.4.2"
 
 java {
     toolchain {
@@ -57,5 +57,4 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>().con
 // Convenience alias
 tasks.register("fatJar") {
     dependsOn("shadowJar")
-}
 }
