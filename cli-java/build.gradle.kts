@@ -37,10 +37,12 @@ application {
 
 tasks.withType<org.gradle.jvm.tasks.Jar>().configureEach {
     manifest {
-        attributes[
-            "Implementation-Title" to "voxcompose-cli",
-            "Implementation-Version" to project.version
-        ]
+        attributes(
+            mapOf(
+                "Implementation-Title" to "voxcompose-cli",
+                "Implementation-Version" to project.version.toString()
+            )
+        )
     }
 }
 
