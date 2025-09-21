@@ -5,6 +5,10 @@ on:
     branches: [ main ]
   pull_request:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   links:
     runs-on: ubuntu-latest
@@ -30,3 +34,19 @@ jobs:
           test ! -d src || (echo "src/ should not exist" && exit 1)
           test ! -d packaging || (echo "packaging/ should not exist" && exit 1)
           test ! -d bin || (echo "bin/ should not exist" && exit 1)
+
+  quick_validation:
+    name: Quick Validation
+    runs-on: ubuntu-latest
+    needs: [links, hygiene]
+    steps:
+      - name: Quick validation passed
+        run: echo "Links and hygiene checks completed"
+
+  quality_checks:
+    name: Quality Checks
+    runs-on: ubuntu-latest
+    needs: [hygiene]
+    steps:
+      - name: Quality checks passed
+        run: echo "Hygiene checks completed"
