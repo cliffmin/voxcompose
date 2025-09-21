@@ -17,6 +17,11 @@ public class Main {
         for (int i = 0; i < args.length; i++) {
             String a = args[i];
             switch (a) {
+                case "--version":
+                    String v = Main.class.getPackage() != null ? Main.class.getPackage().getImplementationVersion() : null;
+                    if (v == null || v.isBlank()) v = "dev";
+                    System.out.println(v);
+                    return;
                 case "--duration":
                     if (i + 1 < args.length) duration = args[++i];
                     break;
@@ -28,8 +33,8 @@ public class Main {
                     break;
                 case "--learn":
                     if (i + 1 < args.length) {
-                        String v = args[++i];
-                        learn = !"off".equalsIgnoreCase(v);
+                        String v2 = args[++i];
+                        learn = !"off".equalsIgnoreCase(v2);
                     }
                     break;
                 case "--dry-run":
@@ -78,6 +83,7 @@ public class Main {
 
     private static void printHelp() {
         System.out.println("voxcompose [OPTIONS]\n" +
+                "  --version\n" +
                 "  --duration <seconds>\n" +
                 "  --data-dir <path>\n" +
                 "  --state-dir <path>\n" +

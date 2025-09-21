@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.voxcompose"
-version = "0.1.0"
+version = "0.4.1"
 
 java {
     toolchain {
@@ -32,6 +32,18 @@ application {
     mainClass.set("com.voxcompose.cli.Main")
 }
 
+// Configure manifest so --version can print Implementation-Version
+// Apply to all Jar-like tasks, including ShadowJar
+
+tasks.withType<org.gradle.jvm.tasks.Jar>().configureEach {
+    manifest {
+        attributes[
+            "Implementation-Title" to "voxcompose-cli",
+            "Implementation-Version" to project.version
+        ]
+    }
+}
+
 // Configure fat JAR (shadow) for distribution
 // Avoid imports in Kotlin DSL by fully qualifying the ShadowJar task type
 
@@ -43,4 +55,5 @@ tasks.withType<com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar>().con
 // Convenience alias
 tasks.register("fatJar") {
     dependsOn("shadowJar")
+}
 }
