@@ -1,5 +1,27 @@
 # VoxCompose Project Structure Guide
 
+## Java CLI local builds
+
+The Java CLI lives under `cli-java/`. CI builds it with Gradle 8.7. To run the same locally without changing your global Gradle version, use SDKMAN to activate Gradle 8.7:
+
+```bash
+# Install SDKMAN if needed
+curl -s "https://get.sdkman.io" | bash
+source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+# Use the CI-aligned Gradle version
+sdk install gradle 8.7 || true
+sdk use gradle 8.7
+
+# Build and test
+gradle -p cli-java clean test --no-daemon
+gradle -p cli-java shadowJar --no-daemon
+```
+
+Notes:
+- We pin CI to Gradle 8.7 due to shadow plugin compatibility. If you have Gradle 9+ as your default, tests may fail locally.
+- The release workflow produces a versioned fat JAR: `voxcompose-cli-<version>-all.jar`.
+
 **Purpose**: Smart transcript refinement with self-learning corrections  
 **Stack**: Java 21+ with Gradle  
 **Quick Build**: `./gradlew --no-daemon clean fatJar`  
