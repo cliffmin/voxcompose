@@ -42,6 +42,7 @@ SHA256=$(curl -L "$ASSET_URL" | shasum -a 256 | awk '{print $1}')
 ```
 
 Notes
+- Version/tag alignment: set cli-java/build.gradle.kts project.version to match the release tag so the asset name aligns (voxcompose-cli-<version>-all.jar). Example: set version 0.4.4, then tag v0.4.4.
 - No root-level build files are introduced; all build artifacts and gradle config live under cli-java/
 - The fat JAR contains all dependencies and can be run with:
 
