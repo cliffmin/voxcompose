@@ -12,7 +12,7 @@ Key directories
 
 Quick start
 - ./gradlew --no-daemon clean fatJar
-- echo "draft notes..." | java -jar build/libs/voxcompose-*-all.jar --model llama3.1 --timeout-ms 8000
+- echo "draft notes..." | java -jar build/libs/voxcompose-1.0.0-all.jar --model llama3.1 --timeout-ms 8000
 
 Indexing guidance for Warp
 - Prioritize: src/main/java/, build.gradle.kts, README.md

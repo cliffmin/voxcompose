@@ -9,7 +9,7 @@ echo "=== Testing VoxCompose Capabilities Endpoint ==="
 echo "Building VoxCompose..."
 (cd .. && ./gradlew fatJar >/dev/null 2>&1)
 
-JAR="../build/libs/voxcompose-0.1.0-all.jar"
+JAR="../build/libs/voxcompose-1.0.0-all.jar"
 
 # Test 1: Capabilities endpoint returns valid JSON
 echo -n "Test 1: Capabilities returns valid JSON... "

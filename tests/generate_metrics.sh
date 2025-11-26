@@ -5,7 +5,7 @@ set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 VOXCOMPOSE_DIR="$(dirname "$SCRIPT_DIR")"
-JAR="$VOXCOMPOSE_DIR/build/libs/voxcompose-0.1.0-all.jar"
+JAR="$VOXCOMPOSE_DIR/build/libs/voxcompose-1.0.0-all.jar"
 METRICS_FILE="$SCRIPT_DIR/metrics.json"
 
 # Build if needed

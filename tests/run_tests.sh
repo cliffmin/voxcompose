@@ -15,7 +15,7 @@ echo "=== VoxCompose Test Suite ==="
 echo ""
 
 # Build if needed
-if [[ ! -f "build/libs/voxcompose-0.1.0-all.jar" ]]; then
+if [[ ! -f "build/libs/voxcompose-1.0.0-all.jar" ]]; then
     echo "Building VoxCompose..."
     ./gradlew --no-daemon clean fatJar >/dev/null 2>&1
 fi

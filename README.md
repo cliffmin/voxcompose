@@ -4,7 +4,7 @@
 
 VoxCompose transforms raw transcripts into polished Markdown using intelligent correction algorithms and optional LLM refinement. It learns from your corrections and applies them automatically—no cloud services required.
 
-### 🏆 Major Achievements in v0.3.0
+### 🏆 Major Achievements in v1.0.0
 
 | Metric | Improvement | Impact |
 |--------|-------------|--------|
@@ -23,10 +23,10 @@ VoxCompose transforms raw transcripts into polished Markdown using intelligent c
 
 ## 📚 Documentation
 
-- **[📈 Performance Improvements](docs/PERFORMANCE.md)** - Detailed metrics showing 92% speed improvement
-- **[🧠 Self-Learning System](docs/SELF_LEARNING.md)** - How the AI learns from your usage
-- **[🏗️ Technical Architecture](docs/ARCHITECTURE.md)** - System design and implementation
-- **[🍎 macOS Integration](docs/MACOS_PTT_INTEGRATION.md)** - Setup with push-to-talk dictation
+- **[📈 Performance Improvements](docs/performance.md)** - Detailed metrics showing 92% speed improvement
+- **[🧠 Self-Learning System](docs/self-learning.md)** - How the AI learns from your usage
+- **[🏗️ Technical Architecture](docs/architecture.md)** - System design and implementation
+- **[🍎 VoxCore Integration](docs/voxcore-integration.md)** - Setup with VoxCore push-to-talk
 
 ## 📈 Performance & Accuracy
 
@@ -81,7 +81,7 @@ ollama pull llama3.1
 
 # 3. Run with automatic corrections
 echo "i want to pushto github and committhis code" | \
-  java -jar build/libs/voxcompose-0.1.0-all.jar
+  java -jar build/libs/voxcompose-1.0.0-all.jar
 
 # Output: "I want to push to GitHub and commit this code"
 ```
@@ -106,7 +106,7 @@ echo "i want to pushto github and committhis code" | \
 
 ## 🔗 Integration with macOS PTT Dictation
 
-VoxCompose seamlessly integrates with [macos-ptt-dictation](https://github.com/voxcompose/macos-ptt-dictation) for complete voice-to-text workflow:
+VoxCompose seamlessly integrates with [VoxCore](https://github.com/cliffmin/voxcore) for complete voice-to-text workflow:
 
 1. **macOS PTT** captures audio with push-to-talk (F13/Shift+F13)
 2. **Whisper** transcribes audio to text
@@ -116,10 +116,10 @@ VoxCompose seamlessly integrates with [macos-ptt-dictation](https://github.com/v
 ### Setup Integration
 
 ```lua
--- In macos-ptt-dictation/hammerspoon/ptt_config.lua
+-- In voxcore/hammerspoon/ptt_config.lua
 LLM_REFINER = {
   ENABLED = true,
-  CMD = { "/usr/bin/java", "-jar", os.getenv("HOME") .. "/code/voxcompose/build/libs/voxcompose-0.1.0-all.jar" },
+  CMD = { "/usr/bin/java", "-jar", os.getenv("HOME") .. "/code/voxcompose/build/libs/voxcompose-1.0.0-all.jar" },
   ARGS = { "--model", "llama3.1", "--duration", "{{DURATION}}" },
 }
 ```

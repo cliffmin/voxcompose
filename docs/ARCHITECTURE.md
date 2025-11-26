@@ -346,4 +346,4 @@ VoxCompose's architecture prioritizes performance, privacy, and extensibility. T
 
 ---
 
-*Architecture documented for VoxCompose v0.3.0*
+*Architecture documented for VoxCompose v1.0.0*

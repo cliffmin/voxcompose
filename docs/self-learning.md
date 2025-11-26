@@ -295,4 +295,4 @@ The result is a transcription refinement system that gets better every time you 
 
 ---
 
-*Self-learning metrics validated on 2025-09-16 using VoxCompose v0.3.0*
+*Self-learning metrics validated using VoxCompose v1.0.0*

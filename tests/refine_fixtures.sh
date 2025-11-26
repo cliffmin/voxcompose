@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Refine all fixture .txt files with VoxCompose; assert non-empty Markdown output and that
 # the CLI logs a distinctive line indicating refinement began. Also run one disabled test via VOX_REFINE=0.
-JAR="${HOME}/code/voxcompose/build/libs/voxcompose-0.1.0-all.jar"
+JAR="${HOME}/code/voxcompose/build/libs/voxcompose-1.0.0-all.jar"
 FIXDIR="$(cd "$(dirname "$0")/.." && pwd)/fixtures"
 MODEL="${VOX_MODEL:-llama3.1}"
 TIMEOUT="${VOX_TIMEOUT_MS:-10000}"
