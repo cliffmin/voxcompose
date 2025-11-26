@@ -1,298 +1,64 @@
-# VoxCompose Self-Learning System
+# Self-Learning System
 
 ## Overview
 
-VoxCompose's self-learning system represents a breakthrough in transcription accuracy, automatically learning from your speech patterns and vocabulary to deliver personalized, instant corrections without requiring cloud services or manual configuration.
+VoxCompose automatically learns from corrections and applies them to future transcriptions without requiring cloud services.
 
 ## How It Works
 
-### The Learning Cycle
+1. **Input** → Transcription from Whisper
+2. **Apply corrections** → Fix known patterns (instant, ~140ms)
+3. **Duration check** → If ≥21s, also run LLM refinement
+4. **Learn** → Compare LLM output to input, extract new patterns
+5. **Update profile** → Store corrections for future use
 
-```
-┌─────────────────────────────────────────────────────────┐
-│                   User Input (Speech)                    │
-└────────────────────────┬────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│               Transcription (Whisper)                    │
-└────────────────────────┬────────────────────────────────┘
-                         ↓
-┌─────────────────────────────────────────────────────────┐
-│          Apply Learned Corrections (142ms)               │
-│   • Fix concatenations: pushto → push to                 │
-│   • Fix capitalizations: json → JSON                     │
-│   • Apply user patterns: your custom vocabulary          │
-└────────────────────────┬────────────────────────────────┘
-                         ↓
-                    [Duration Check]
-                    ↙             ↘
-            < 21 seconds        ≥ 21 seconds
-                 ↓                    ↓
-         [Output Corrected]    [LLM Refinement]
-                                      ↓
-                              [Analyze Differences]
-                                      ↓
-                              [Learn New Patterns]
-                                      ↓
-                              [Update Profile]
-```
+## What It Learns
 
-## Key Features
+### Word Corrections
+Commonly mis-transcribed word combinations:
 
-### 1. Zero-Configuration Learning
+| Transcribed | Corrected |
+|-------------|-----------|
+| pushto | push to |
+| committhis | commit this |
+| followup | follow up |
 
-The system begins learning immediately upon first use:
+### Technical Vocabulary
+Proper capitalization of technical terms:
 
-- **No training required**: Works out of the box
-- **No cloud dependency**: All learning happens locally
-- **No manual configuration**: Automatically detects patterns
-- **Privacy-first**: Your data never leaves your machine
+| Transcribed | Corrected |
+|-------------|-----------|
+| github | GitHub |
+| json | JSON |
+| api | API |
 
-### 2. Intelligent Pattern Recognition
+### Personal Vocabulary
+Over time, learns your unique vocabulary (company terms, project names, etc.).
 
-VoxCompose identifies and learns three types of patterns:
-
-#### Word Corrections
-Commonly mis-transcribed word combinations are automatically fixed:
-
-| Transcribed | Corrected | Confidence |
-|-------------|-----------|------------|
-| pushto | push to | 100% |
-| committhis | commit this | 100% |
-| followup | follow up | 100% |
-| setup | set up | 100% |
-| signin | sign in | 100% |
-
-#### Technical Vocabulary
-Technical terms are properly capitalized and formatted:
-
-| Transcribed | Corrected | Domain |
-|-------------|-----------|--------|
-| github | GitHub | Development |
-| json | JSON | Development |
-| api | API | Development |
-| nodejs | Node.js | Development |
-| postgresql | PostgreSQL | Database |
-| kubernetes | Kubernetes | DevOps |
-
-#### Personal Vocabulary
-The system learns your unique vocabulary over time:
-
-- Company-specific terms
-- Project names
-- Team member names
-- Domain-specific jargon
-
-### 3. Continuous Improvement
-
-```
-Learning Curve: Accuracy Over Time
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Day 1:   ████░░░░░░░░░░░░░░░░ 20% (baseline)
-Week 1:  ████████░░░░░░░░░░░░ 40% (common patterns learned)
-Week 2:  ████████████░░░░░░░░ 60% (vocabulary building)
-Week 4:  ████████████████░░░░ 80% (personalized)
-Week 8:  ████████████████████ 100% (fully adapted)
-
-After 8 weeks: Near-perfect accuracy on your vocabulary
-```
-
-## Real-World Impact
-
-### Example 1: Software Development
-
-**Before Self-Learning:**
-```
-Input:  "i need to pushto github and update the json api endpoint"
-Output: "i need to pushto github and update the json api endpoint"
-Errors: 4 (pushto, github, json, api)
-```
-
-**After Self-Learning:**
-```
-Input:  "i need to pushto github and update the json api endpoint"
-Output: "I need to push to GitHub and update the JSON API endpoint"
-Errors: 0 (Perfect!)
-```
-
-### Example 2: Technical Documentation
-
-**Before Self-Learning:**
-```
-Input:  "setup postgresql on kubernetes using docker"
-Output: "setup postgresql on kubernetes using docker"
-Errors: 4 (setup, postgresql, kubernetes, docker)
-```
-
-**After Self-Learning:**
-```
-Input:  "setup postgresql on kubernetes using docker"
-Output: "Set up PostgreSQL on Kubernetes using Docker"
-Errors: 0 (Perfect!)
-```
-
-## Performance Metrics
-
-### Accuracy Improvements
-
-| Metric | Without Learning | With Learning | Improvement |
-|--------|------------------|---------------|-------------|
-| Word Concatenation Errors | 100% | 0% | **100% reduction** |
-| Technical Term Errors | 80% | 0% | **100% reduction** |
-| Overall Error Rate | 20% | 5% | **75% reduction** |
-| User Satisfaction | 60% | 95% | **58% increase** |
-
-### Speed Benefits
-
-The self-learning system operates with zero additional latency:
-
-```
-Processing Time Comparison
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Without corrections: ████████████████ 1,800ms (LLM required)
-With corrections:    ██ 142ms (instant fix, no LLM needed)
-
-Improvement: 92% faster for common corrections
-```
-
-## Privacy & Security
-
-### Your Data Stays Private
-
-- **100% Local Processing**: No data sent to cloud services
-- **Encrypted Storage**: Learning profile encrypted on disk
-- **User Control**: Delete learning history anytime
-- **No Telemetry**: We don't track your usage
-
-### Storage Location
+## Storage
 
 Learning data is stored locally at:
 ```
 ~/.config/voxcompose/learned_profile.json
 ```
 
-You can inspect, modify, or delete this file at any time.
+You can inspect, modify, or delete this file. No data is sent to cloud services.
 
-## Advanced Features
+## Profile Schema
 
-### 1. Context-Aware Corrections
-
-The system understands context to avoid over-correction:
-
+```json
+{
+  "wordCorrections": {
+    "pushto": "push to",
+    "committhis": "commit this"
+  },
+  "capitalizations": {
+    "github": "GitHub",
+    "json": "JSON"
+  },
+  "statistics": {
+    "totalRefinements": 1247,
+    "avgProcessingTime": 142
+  }
+}
 ```
-"I'm reading the API documentation" → "I'm reading the API documentation" ✓
-"The api key is invalid" → "The API key is invalid" ✓
-```
-
-### 2. Domain Adaptation
-
-Automatically adapts to your field:
-
-- **Medical**: Learns medical terminology
-- **Legal**: Learns legal terms
-- **Technical**: Learns programming vocabulary
-- **Business**: Learns corporate jargon
-
-### 3. Multi-User Profiles
-
-Support for multiple users on the same machine:
-```bash
-# Switch profiles
-export VOX_PROFILE=work
-voxcompose # Uses work profile
-
-export VOX_PROFILE=personal  
-voxcompose # Uses personal profile
-```
-
-## Configuration
-
-### View Learning Statistics
-
-```bash
-java -jar voxcompose.jar --show-stats
-
-# Output:
-Corrections learned: 247
-Accuracy improvement: 75%
-Profile age: 14 days
-Most common corrections:
-  - pushto → push to (42 times)
-  - github → GitHub (38 times)
-  - json → JSON (31 times)
-```
-
-### Reset Learning
-
-To start fresh:
-```bash
-rm ~/.config/voxcompose/learned_profile.json
-```
-
-### Export/Import Learning
-
-Share learning profiles between machines:
-```bash
-# Export
-cp ~/.config/voxcompose/learned_profile.json ~/Desktop/my_profile.json
-
-# Import
-cp ~/Desktop/my_profile.json ~/.config/voxcompose/learned_profile.json
-```
-
-## Frequently Asked Questions
-
-### Q: How long does it take to learn my vocabulary?
-
-The system shows immediate improvements for common patterns and reaches optimal accuracy within 4-8 weeks of regular use.
-
-### Q: Does it work offline?
-
-Yes, all learning and corrections work completely offline.
-
-### Q: Can I teach it specific corrections?
-
-Yes, every refinement you accept teaches the system. You can also manually edit the learning profile JSON file.
-
-### Q: Will it learn incorrect patterns?
-
-The system uses confidence thresholds and validation to avoid learning errors. Patterns must appear consistently to be learned.
-
-### Q: How much disk space does it use?
-
-The learning profile typically uses less than 1MB, even after years of use.
-
-## Technical Details
-
-### Learning Algorithm
-
-1. **Diff Analysis**: Compares input with refined output
-2. **Pattern Extraction**: Identifies consistent changes
-3. **Confidence Scoring**: Weights patterns by frequency
-4. **Profile Update**: Stores high-confidence patterns
-5. **Application**: Applies corrections in real-time
-
-### Performance Characteristics
-
-- **Learning Speed**: Asynchronous, non-blocking
-- **Correction Speed**: O(n) linear with input length
-- **Memory Usage**: < 10MB resident memory
-- **CPU Usage**: < 1% during correction
-- **Disk I/O**: Write-through cache with batching
-
-## Conclusion
-
-VoxCompose's self-learning system transforms transcription accuracy through intelligent, privacy-preserving local learning. With zero configuration and immediate benefits, it delivers:
-
-- **100% accuracy** on common corrections
-- **142ms processing time** (92% faster than LLM)
-- **Complete privacy** with local-only processing
-- **Continuous improvement** through usage
-
-The result is a transcription refinement system that gets better every time you use it, without sacrificing privacy or performance.
-
----
-
-*Self-learning metrics validated using VoxCompose v1.0.0*
