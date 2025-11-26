@@ -10,14 +10,14 @@ Thanks for your interest in improving VoxCompose.
 ## Development quickstart
 
 ```bash
-# Build the fat JAR
-./gradlew --no-daemon clean fatJar
+# Build and install dev version
+make install-dev
 
-# Run tests
-./tests/run_tests.sh
+# Run all tests
+make test
 
 # Test with sample input
-echo "test input" | java -jar build/libs/voxcompose-1.0.0-all.jar --model llama3.1
+echo "test input" | voxcompose-dev --model llama3.1
 ```
 
 ## Style

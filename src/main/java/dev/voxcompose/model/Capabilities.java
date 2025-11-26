@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
 /**
  * Represents VoxCompose capabilities for plugin negotiation.
  * This allows VoxCompose to communicate its requirements and preferences
- * to the calling application (e.g., macos-ptt-dictation).
+ * to the calling application (e.g., VoxCore).
  */
 public class Capabilities {
     private String version = "1.1";
