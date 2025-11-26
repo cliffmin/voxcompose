@@ -1,21 +1,16 @@
 # VoxCompose Documentation
 
-## Quick Links
+## Essential Docs
 
-| Document | Description |
-|----------|-------------|
-| [Performance](performance.md) | Benchmarks and speed improvements |
-| [Self-Learning](self-learning.md) | How automatic corrections work |
-| [Architecture](architecture.md) | System design and components |
-| [VoxCore Integration](voxcore-integration.md) | Setup with VoxCore push-to-talk |
+- [VoxCore Integration](voxcore-integration.md) - Setup with VoxCore push-to-talk
+- [Architecture](architecture.md) - System design overview
+- [Release Guide](development/release.md) - How to cut a release
 
-## For Developers
+## Reference
 
-| Document | Description |
-|----------|-------------|
-| [Release Guide](development/release.md) | How to cut a release |
+- [Self-Learning](self-learning.md) - How automatic corrections work
+- [Performance](performance.md) - Benchmarks
 
-## Related Projects
+## Related
 
-- **[VoxCore](https://github.com/cliffmin/voxcore)** - Universal voice transcription for macOS (main project)
-- VoxCompose is an optional plugin for VoxCore that adds ML-based refinement
+- [VoxCore](https://github.com/cliffmin/voxcore) - Main project (macOS voice transcription)
