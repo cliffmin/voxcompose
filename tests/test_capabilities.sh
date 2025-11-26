@@ -3,13 +3,16 @@
 
 set -e
 
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+cd "$SCRIPT_DIR/.."
+
 echo "=== Testing VoxCompose Capabilities Endpoint ==="
 
-# Build the JAR
-echo "Building VoxCompose..."
-(cd .. && ./gradlew fatJar >/dev/null 2>&1)
-
-JAR="../build/libs/voxcompose-1.0.0-all.jar"
+JAR="build/libs/voxcompose-1.0.0-all.jar"
+if [[ ! -f "$JAR" ]]; then
+    echo "Building VoxCompose..."
+    ./gradlew --no-daemon fatJar >/dev/null 2>&1
+fi
 
 # Test 1: Capabilities endpoint returns valid JSON
 echo -n "Test 1: Capabilities returns valid JSON... "

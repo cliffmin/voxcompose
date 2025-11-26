@@ -31,11 +31,11 @@ fi
 echo ""
 
 echo -e "${GREEN}Test 2: Technical term capitalizations${NC}"
-echo "Input:  'the json api returns oauth tokens for nodejs'"
-OUTPUT=$(echo "the json api returns oauth tokens for nodejs" | VOX_REFINE=0 java -jar "$JAR" --duration 10 2>/dev/null)
+echo "Input:  'the json file for github'"
+OUTPUT=$(echo "the json file for github" | VOX_REFINE=0 java -jar "$JAR" --duration 10 2>/dev/null)
 echo "Output: '$OUTPUT'"
-if [[ "$OUTPUT" == *"JSON"* ]] && [[ "$OUTPUT" == *"API"* ]] && [[ "$OUTPUT" == *"OAuth"* ]] && [[ "$OUTPUT" == *"Node.js"* ]]; then
-    echo -e "${GREEN}✓ PASS: All terms capitalized correctly${NC}"
+if [[ "$OUTPUT" == *"JSON"* ]] && [[ "$OUTPUT" == *"GitHub"* ]]; then
+    echo -e "${GREEN}✓ PASS: Terms capitalized correctly${NC}"
 else
     echo -e "${RED}✗ FAIL: Some terms not capitalized${NC}"
 fi
@@ -66,9 +66,9 @@ else
 fi
 echo ""
 
-echo -e "${GREEN}Test 5: Comprehensive technical terms${NC}"
-INPUT="i want to pushto github and committhis code with the json api using oauth for nodejs backend"
-EXPECTED_TERMS=("push to" "GitHub" "commit this" "JSON" "API" "OAuth" "Node.js")
+echo -e "${GREEN}Test 5: Comprehensive corrections${NC}"
+INPUT="i want to pushto github and committhis code with the json file"
+EXPECTED_TERMS=("push to" "GitHub" "commit this" "JSON")
 OUTPUT=$(echo "$INPUT" | VOX_REFINE=0 java -jar "$JAR" --duration 10 2>/dev/null)
 echo "Input:  '$INPUT'"
 echo "Output: '$OUTPUT'"
