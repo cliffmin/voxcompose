@@ -71,18 +71,16 @@ Overall Accuracy:
 ## 🚀 Quick Start
 
 ```bash
-# 1. Install Ollama and pull a model
-brew install ollama
+# Install via Homebrew
+brew tap cliffmin/tap
+brew install voxcompose ollama
+
+# Start Ollama and pull a model
 ollama serve &
 ollama pull llama3.1
 
-# 2. Build VoxCompose
-./gradlew --no-daemon clean fatJar
-
-# 3. Run with automatic corrections
-echo "i want to pushto github and committhis code" | \
-  java -jar build/libs/voxcompose-1.0.0-all.jar
-
+# Test it
+echo "i want to pushto github and committhis code" | voxcompose
 # Output: "I want to push to GitHub and commit this code"
 ```
 
@@ -116,10 +114,10 @@ VoxCompose seamlessly integrates with [VoxCore](https://github.com/cliffmin/voxc
 ### Setup Integration
 
 ```lua
--- In voxcore/hammerspoon/ptt_config.lua
+-- In ~/.hammerspoon/ptt_config.lua
 LLM_REFINER = {
   ENABLED = true,
-  CMD = { "/usr/bin/java", "-jar", os.getenv("HOME") .. "/code/voxcompose/build/libs/voxcompose-1.0.0-all.jar" },
+  CMD = { "/opt/homebrew/bin/voxcompose" },
   ARGS = { "--model", "llama3.1", "--duration", "{{DURATION}}" },
 }
 ```
@@ -150,22 +148,23 @@ LLM_REFINER = {
 
 ## 📦 Installation
 
-### Build from Source
+### Homebrew (Recommended)
 
 ```bash
-# Requirements: Java 17+, Ollama
-brew install openjdk@17 ollama
-
-# Build
-./gradlew --no-daemon clean fatJar
+brew tap cliffmin/tap
+brew install voxcompose ollama
 ```
 
-### Homebrew (Coming Soon)
+<details>
+<summary>Alternative: Build from source</summary>
 
 ```bash
-brew tap voxcompose/tap
-brew install voxcompose
+brew install openjdk@21 ollama
+git clone https://github.com/cliffmin/voxcompose.git
+cd voxcompose && ./gradlew --no-daemon clean fatJar
+# JAR at build/libs/voxcompose-*-all.jar
 ```
+</details>
 
 
 ## Changelog
