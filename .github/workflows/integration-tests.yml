@@ -30,6 +30,9 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-gradle-
       
+      - name: Install jq
+        run: sudo apt-get install -y jq
+      
       - name: Build fat JAR
         run: ./gradlew --no-daemon clean fatJar
       
