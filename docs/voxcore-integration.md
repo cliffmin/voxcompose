@@ -1,7 +1,7 @@
-# macOS PTT Dictation Integration Guide
+# VoxCore Integration Guide
 
 ## Overview
-VoxCompose now supports duration-aware refinement, allowing macos-ptt-dictation to optimize when LLM refinement is triggered based on audio duration.
+VoxCompose integrates with [VoxCore](https://github.com/cliffmin/voxcore) for complete voice-to-text workflow. VoxCompose supports duration-aware refinement, allowing VoxCore to optimize when LLM refinement is triggered based on audio duration.
 
 ## Key Features
 
@@ -44,7 +44,7 @@ VoxCompose learns from refinements and applies corrections even when LLM is skip
 Update your Hammerspoon configuration to pass duration:
 
 ```lua
--- In macos-ptt-dictation/hammerspoon/ptt_config.lua
+-- In voxcore/hammerspoon/ptt_config.lua
 
 -- Query VoxCompose capabilities on startup
 function getVoxComposeCapabilities()

@@ -10,7 +10,7 @@ echo ""
 echo "Building VoxCompose..."
 (cd .. && ./gradlew fatJar >/dev/null 2>&1)
 
-JAR="../build/libs/voxcompose-0.1.0-all.jar"
+JAR="../build/libs/voxcompose-1.0.0-all.jar"
 
 # Check if Ollama is running
 echo -n "Checking if Ollama is available... "

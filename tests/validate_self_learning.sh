@@ -12,12 +12,12 @@ echo "=== VoxCompose Self-Learning Validation ==="
 echo ""
 
 # Build if needed
-if [[ ! -f "build/libs/voxcompose-0.1.0-all.jar" ]]; then
+if [[ ! -f "build/libs/voxcompose-1.0.0-all.jar" ]]; then
     echo "Building VoxCompose..."
     ./gradlew --no-daemon fatJar >/dev/null 2>&1
 fi
 
-JAR="build/libs/voxcompose-0.1.0-all.jar"
+JAR="build/libs/voxcompose-1.0.0-all.jar"
 
 echo -e "${GREEN}Test 1: Basic concatenation fixes${NC}"
 echo "Input:  'i want to pushto github and committhis code'"

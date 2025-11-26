@@ -9,7 +9,7 @@ echo "=== Testing VoxCompose Self-Learning Corrections ==="
 echo "Building VoxCompose..."
 (cd .. && ./gradlew fatJar >/dev/null 2>&1)
 
-JAR="../build/libs/voxcompose-0.1.0-all.jar"
+JAR="../build/libs/voxcompose-1.0.0-all.jar"
 
 # Test cases for common corrections
 declare -A TEST_CASES

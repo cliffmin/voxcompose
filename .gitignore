@@ -31,3 +31,4 @@
 *.ipr
 out/
 build
+bin/
