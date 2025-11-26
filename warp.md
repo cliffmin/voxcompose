@@ -19,5 +19,5 @@ Indexing guidance for Warp
 - Skip: go/, demos/, docs/, .gradle/, build/, .idea/, .vscode/
 
 Notes
-- Integrates well with macos-ptt-dictation for long-form editing (Shift+F13 flow).
+- Integrates with VoxCore for push-to-talk voice input (Shift+F13 flow).
 
