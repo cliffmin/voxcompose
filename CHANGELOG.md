@@ -46,7 +46,7 @@ This release represents the restoration of the complete VoxCompose functionality
   - Backward compatible - works without duration flag
 
 ### Testing Infrastructure
-- **Golden dataset testing framework** (following macos-ptt-dictation model):
+- **Golden dataset testing framework** (following VoxCore model):
   - `tests/generate_golden_dataset.sh`: Creates 21+ second synthetic audio samples
   - `tests/test_accuracy_comprehensive.sh`: Measures WER, refinement quality, and performance
   - Categories: short_threshold, medium_length, long_form, technical, natural_speech, meeting_notes
