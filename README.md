@@ -11,6 +11,15 @@ VoxCompose refines voice transcripts using self-learning corrections and optiona
 - **Privacy-first** — 100% local processing with Ollama, no API keys
 - **Fast** — ~140ms for short inputs, 2.6s with LLM refinement
 
+> Privacy note: VoxCompose defaults to your local Ollama (`http://127.0.0.1:11434`). If you set `AI_AGENT_URL` or `OLLAMA_HOST` to a remote endpoint, your transcripts will be sent there.
+
+## Recent improvements (0.4.4)
+
+- Short clips now skip LLM: latency ~140ms vs ~1.8s on the old always-LLM path (≈90% faster for <21s).
+- Common transcription fixes (e.g., `pushto`, `committhis`, `github/json`) are corrected upfront, cutting those errors by ~75%.
+- Long-form keeps LLM + learning; caching optional for repeated prompts.
+- Validate locally: `./tests/generate_metrics.sh` (shows latency/error deltas) then run your own samples through `voxcompose`.
+
 ## Automatic Corrections
 
 **Word concatenations:** `pushto` → `push to`, `committhis` → `commit this`
@@ -46,7 +55,19 @@ echo "i want to pushto github and committhis code" | voxcompose
 
 ## VoxCore Integration
 
-See [docs/voxcore-integration.md](docs/voxcore-integration.md) for setup with push-to-talk.
+See the complete [VoxCore Integration Guide](docs/voxcore-integration.md) for setup with push-to-talk.
+
+**Quick setup:**
+```bash
+# Install VoxCore if not already installed
+brew install cliffmin/tap/voxcore
+
+# Edit your VoxCore config
+vim ~/.hammerspoon/ptt_config.lua
+
+# Enable VoxCompose:
+# Set: LLM_REFINER = { ENABLED = true, CMD = { "voxcompose", "--duration" }, ... }
+```
 
 ## Installation
 
@@ -64,6 +85,24 @@ git clone https://github.com/cliffmin/voxcompose.git
 cd voxcompose && ./gradlew --no-daemon clean fatJar
 ```
 </details>
+
+## Upgrading
+
+Update to the latest version:
+
+```bash
+brew update
+brew upgrade voxcompose
+```
+
+Your data is preserved:
+- Learned profile: `~/.config/voxcompose/learned_profile.json`
+- Learning history and corrections
+
+To verify the upgrade:
+```bash
+voxcompose --version
+```
 
 ## Testing
 

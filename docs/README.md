@@ -3,7 +3,7 @@
 ## Essential Docs
 
 - [VoxCore Integration](voxcore-integration.md) - Setup with VoxCore push-to-talk
-- [Architecture](architecture.md) - System design overview
+- [Architecture](ARCHITECTURE.md) - System design overview
 - [Release Guide](development/release.md) - How to cut a release
 
 ## Reference
