@@ -20,9 +20,24 @@ import java.util.*;
  */
 public class Main {
   private static RefineCache cache = null;
+  private static final String VERSION = resolveVersion();
+
+  private static String resolveVersion() {
+    Package pkg = Main.class.getPackage();
+    if (pkg != null && pkg.getImplementationVersion() != null) {
+      return pkg.getImplementationVersion();
+    }
+    return "0.4.4";
+  }
 
 
   public static void main(String[] args) throws Exception {
+    // Handle --version request early
+    if (args.length > 0 && ("--version".equals(args[0]) || "-V".equals(args[0]))) {
+      System.out.println(VERSION);
+      System.exit(0);
+    }
+
     // Handle --capabilities request
     if (args.length > 0 && args[0].equals("--capabilities")) {
       Capabilities caps = Capabilities.loadFromProfile();
@@ -58,113 +73,121 @@ public class Main {
     // Apply learned corrections even if refinement is disabled
     LearningService learner = LearningService.getInstance();
     String corrected = learner.applyCorrections(input);
+
+    String finalOut = corrected;  // Start with corrected version
+    boolean ok = false;
+    long refineMs = 0;
+
+    // Track whether we skip LLM refinement
+    boolean skippedForDuration = false;
+    boolean skippedByEnv = false;
     
     // Check duration threshold if provided
     if (config.getInputDurationSeconds() > 0) {
       int threshold = learner.getProfile().getMinDurationForRefinement();
       if (config.getInputDurationSeconds() < threshold) {
-        System.err.println("INFO: Skipping LLM refinement - duration " + 
+        skippedForDuration = true;
+        System.err.println("INFO: Skipping LLM refinement - duration " +
                           config.getInputDurationSeconds() + "s below threshold " + threshold + "s");
-        System.out.print(corrected);
-        // Still learn from the correction patterns
-        if (!input.equals(corrected)) {
-          learner.learnAsync(input, corrected);
-        }
-        return;
       }
     }
     
     // Check if refinement is disabled
     if (!config.isRefineEnabled()) {
+      skippedByEnv = true;
       System.err.println("INFO: LLM refinement disabled via VOX_REFINE");
-      System.out.print(corrected);
-      return;
     }
 
-    // Initialize cache if enabled
-    if (config.isCacheEnabled()) {
-      cache = new RefineCache(config.getCacheMaxSize(), config.getCacheTtlMs());
-    }
-    
-    // Build system prompt with memory
-    StringBuilder systemPrompt = new StringBuilder();
-    systemPrompt.append("You are VoxCompose, a local note refiner. Output ")
-                .append(config.getFormat())
-                .append(" with clear structure. Use headings, bullets, short paragraphs. Preserve meaning; fix disfluencies.\n");
-    
-    // Process memory file efficiently
     int memoryUsedCount = 0;
-    if (config.getMemoryPath() != null) {
-      List<String> memoryLines = MemoryManager.readMemoryLines(config.getMemoryPath(), 20);
-      memoryUsedCount = memoryLines.size();
-      String memoryPrompt = MemoryManager.buildMemoryPrompt(memoryLines);
-      if (!memoryPrompt.isEmpty()) {
-        systemPrompt.append(memoryPrompt);
-      }
-    }
-
-    // Log configuration
-    System.err.println("INFO: Using LLM model: " + config.getModel() + " (source=" + config.getModelSource() + ")");
-    System.err.println("INFO: Using LLM endpoint: " + config.getEndpoint() + " (source=" + config.getEndpointSource() + ")");
-    
-    // Log refinement start (for backward compatibility with tests)
-    if (config.getMemoryPath() != null) {
-      System.err.println("INFO: Running LLM refinement with model: " + config.getModel() + 
-                        " (memory=" + config.getMemoryPath().toString() + ")");
-    } else {
-      System.err.println("INFO: Running LLM refinement with model: " + config.getModel());
-    }
-    
-    String finalSystemPrompt = systemPrompt.toString();
     String cacheKey = null;
-    
-    // Check cache if enabled
-    if (cache != null) {
-      cacheKey = cache.generateKey(config.getModel(), input, finalSystemPrompt);
-      String cachedResult = cache.get(cacheKey);
-      if (cachedResult != null) {
-        System.err.println("INFO: Using cached result");
-        // Apply corrections to cached result too
-        String correctedCached = learner.applyCorrections(cachedResult);
-        System.out.print(correctedCached);
-        writeOptionalOutputs(config, correctedCached, true, 0, memoryUsedCount);
-        return;
-      }
-    }
 
-    // Create optimized Ollama client
-    OllamaClient ollamaClient = new OllamaClient(config.getEndpoint(), config.getTimeoutMs());
-    
-    String finalOut = corrected;  // Start with corrected version
-    boolean ok = false;
-    long refineMs = 0;
-    
-    try {
-      OllamaClient.RefineResult result = ollamaClient.refine(
-        config.getModel(), 
-        corrected,  // Use corrected input
-        finalSystemPrompt
-      );
-      
-      ok = result.success;
-      refineMs = result.responseTimeMs;
-      
-      if (result.success && result.text != null) {
-        finalOut = result.text;
-        // Cache the result if caching is enabled
-        if (cache != null && cacheKey != null) {
-          cache.put(cacheKey, finalOut);
-        }
-        // Learn from this refinement (async)
-        if (!input.equals(finalOut)) {
-          learner.learnAsync(input, finalOut);
-        }
-      } else if (!result.success) {
-        System.err.println(result.error != null ? result.error : "Refinement failed");
+    if (!skippedForDuration && !skippedByEnv) {
+      // Initialize cache if enabled
+      if (config.isCacheEnabled()) {
+        cache = new RefineCache(config.getCacheMaxSize(), config.getCacheTtlMs());
       }
-    } catch (Exception e) {
-      System.err.println("Ollama call failed: " + e.getMessage());
-      ok = false;
+      
+      // Build system prompt with memory
+      StringBuilder systemPrompt = new StringBuilder();
+      systemPrompt.append("You are VoxCompose, a local note refiner. Output ")
+                  .append(config.getFormat())
+                  .append(" with clear structure. Use headings, bullets, short paragraphs. Preserve meaning; fix disfluencies.\n");
+      
+      // Process memory file efficiently
+      if (config.getMemoryPath() != null) {
+        List<String> memoryLines = MemoryManager.readMemoryLines(config.getMemoryPath(), 20);
+        memoryUsedCount = memoryLines.size();
+        String memoryPrompt = MemoryManager.buildMemoryPrompt(memoryLines);
+        if (!memoryPrompt.isEmpty()) {
+          systemPrompt.append(memoryPrompt);
+        }
+      }
+
+      // Log configuration
+      System.err.println("INFO: Using LLM model: " + config.getModel() + " (source=" + config.getModelSource() + ")");
+      System.err.println("INFO: Using LLM endpoint: " + config.getEndpoint() + " (source=" + config.getEndpointSource() + ")");
+      
+      // Log refinement start (for backward compatibility with tests)
+      if (config.getMemoryPath() != null) {
+        System.err.println("INFO: Running LLM refinement with model: " + config.getModel() + 
+                          " (memory=" + config.getMemoryPath().toString() + ")");
+      } else {
+        System.err.println("INFO: Running LLM refinement with model: " + config.getModel());
+      }
+      
+      String finalSystemPrompt = systemPrompt.toString();
+      
+      // Check cache if enabled
+      if (cache != null) {
+        cacheKey = cache.generateKey(config.getModel(), input, finalSystemPrompt);
+        String cachedResult = cache.get(cacheKey);
+        if (cachedResult != null) {
+          System.err.println("INFO: Using cached result");
+          String correctedCached = learner.applyCorrections(cachedResult);
+          finalOut = correctedCached;
+          ok = true;
+          System.out.print(finalOut);
+          writeOptionalOutputs(config, finalOut, ok, refineMs, memoryUsedCount);
+          return;
+        }
+      }
+  
+      // Create optimized Ollama client
+      OllamaClient ollamaClient = new OllamaClient(config.getEndpoint(), config.getTimeoutMs());
+      
+      try {
+        OllamaClient.RefineResult result = ollamaClient.refine(
+          config.getModel(), 
+          corrected,  // Use corrected input
+          finalSystemPrompt
+        );
+        
+        ok = result.success;
+        refineMs = result.responseTimeMs;
+        
+        if (result.success && result.text != null) {
+          finalOut = result.text;
+          // Cache the result if caching is enabled
+          if (cache != null && cacheKey != null) {
+            cache.put(cacheKey, finalOut);
+          }
+          // Learn from this refinement (async)
+          if (!input.equals(finalOut)) {
+            learner.learnAsync(input, finalOut);
+          }
+        } else if (!result.success) {
+          System.err.println(result.error != null ? result.error : "Refinement failed");
+        }
+      } catch (Exception e) {
+        System.err.println("Ollama call failed: " + e.getMessage());
+        ok = false;
+      }
+    } else {
+      // No LLM run; still learn from deterministic corrections
+      if (!input.equals(corrected)) {
+        learner.learnAsync(input, corrected);
+      }
+      ok = true;
     }
 
     // Always apply corrections to final output
@@ -181,7 +204,7 @@ public class Main {
     // Cleanup
     OllamaClient.shutdown();
     
-    if (!ok) System.exit(1);
+    if (!ok && !skippedForDuration && !skippedByEnv) System.exit(1);
   }
   
   /**
@@ -223,4 +246,3 @@ public class Main {
     }
   }
 }
-

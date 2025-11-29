@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git push:*)",
+      "Bash(git checkout:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git pull:*)",
+      "Bash(gh run list:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh api:*)",
+      "Bash(gh api repos/cliffmin/voxcore/actions/runs/19780123729/jobs --jq '.jobs[].steps[] | select(.conclusion == \"\"failure\"\") | {name, conclusion}')",
+      "Bash(curl:*)",
+      "Bash(shasum:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(SKIPPR=1 git push:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
