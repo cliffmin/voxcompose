@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.voxcompose"
-version = "1.0.0"
+version = "0.4.4"
 
 java {
   toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
@@ -29,7 +29,10 @@ application { mainClass.set("dev.voxcompose.Main") }
 
 
 tasks.withType<Jar> {
-  manifest { attributes["Main-Class"] = "dev.voxcompose.Main" }
+  manifest {
+    attributes["Main-Class"] = "dev.voxcompose.Main"
+    attributes["Implementation-Version"] = project.version
+  }
 }
 
 // Configure test task
@@ -73,6 +76,8 @@ val fatJar = tasks.register<Jar>("fatJar") {
       .filter { it.name.endsWith(".jar") }
       .map { zipTree(it) }
   })
-  manifest { attributes["Main-Class"] = "dev.voxcompose.Main" }
+  manifest {
+    attributes["Main-Class"] = "dev.voxcompose.Main"
+    attributes["Implementation-Version"] = project.version
+  }
 }
-
