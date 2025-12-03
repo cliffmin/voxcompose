@@ -1,112 +1,81 @@
 # VoxCompose
 
-**Transcript refinement plugin for [VoxCore](https://github.com/cliffmin/voxcore)**
+Transcript refiner for [VoxCore](https://github.com/cliffmin/voxcore) with self-learning corrections and optional local LLM polish.
 
-VoxCompose refines voice transcripts using self-learning corrections and optional local LLM processing. Works standalone or as part of the VoxCore push-to-talk workflow.
-
-## Features
-
-- **Self-learning corrections** — Fixes common transcription errors without LLM calls
-- **Smart processing** — Corrections-only for short inputs (<21s), adds LLM for longer content
-- **Privacy-first** — 100% local processing with Ollama, no API keys
-- **Fast** — ~140ms for short inputs, 2.6s with LLM refinement
-
-> Privacy note: VoxCompose defaults to your local Ollama (`http://127.0.0.1:11434`). If you set `AI_AGENT_URL` or `OLLAMA_HOST` to a remote endpoint, your transcripts will be sent there.
-
-## Recent improvements (0.4.4)
-
-- Short clips now skip LLM: latency ~140ms vs ~1.8s on the old always-LLM path (≈90% faster for <21s).
-- Common transcription fixes (e.g., `pushto`, `committhis`, `github/json`) are corrected upfront, cutting those errors by ~75%.
-- Long-form keeps LLM + learning; caching optional for repeated prompts.
-- Validate locally: `./tests/generate_metrics.sh` (shows latency/error deltas) then run your own samples through `voxcompose`.
-
-## Automatic Corrections
-
-**Word concatenations:** `pushto` → `push to`, `committhis` → `commit this`
-
-**Technical terms:** `github` → `GitHub`, `json` → `JSON`, `nodejs` → `Node.js`
-
-## 🚀 Quick Start
-
+## Quick start
 ```bash
-# Install via Homebrew
 brew tap cliffmin/tap
 brew install voxcompose ollama
 
-# Start Ollama and pull a model
 ollama serve &
 ollama pull llama3.1
 
-# Test it
 echo "i want to pushto github and committhis code" | voxcompose
-# Output: "I want to push to GitHub and commit this code"
+# → "I want to push to GitHub and commit this code"
 ```
 
-## Configuration
+## Requirements
+- Java 21
+- macOS 11+ (primary target; Ollama required for LLM refinement)
+- Optional (golden/accuracy suite): ffmpeg/ffprobe, whisper-cpp (`whisper-cli`), jq, bc
 
-| Option | Description | Default |
-|--------|-------------|------|
+## Features
+- **Self-learning corrections**: fixes common errors without LLM calls
+- **Duration-aware**: <21s uses corrections-only; long-form adds LLM
+- **Fast & local**: ~140ms short-path; 100% on-device with Ollama (no API keys)
+- **Privacy-first**: local by default; if you set `AI_AGENT_URL`/`OLLAMA_HOST` to remote, transcripts go there
+
+Recent improvements (0.4.4):
+- Short clips skip LLM (~90% faster for <21s)
+- Upfront fixes for concatenations/tech terms (`pushto`, `committhis`, `github/json`, etc.)
+- Optional caching for repeated prompts
+
+Automatic corrections (examples):
+- `pushto` → `push to`, `committhis` → `commit this`
+- `github` → `GitHub`, `json` → `JSON`, `nodejs` → `Node.js`
+
+## Usage & configuration
+```bash
+echo "i want to pushto github" | voxcompose --duration 10
+```
+
+| Flag | Description | Default |
+| --- | --- | --- |
 | `--model` | LLM model name | `llama3.1` |
-| `--duration` | Input duration in seconds | - |
-| `--memory` | JSONL file with preferences/glossary | - |
+| `--duration` | Input duration in seconds (guides LLM usage) | required for long/short split |
+| `--memory` | JSONL preferences/glossary | - |
 | `--cache` | Enable response caching | disabled |
 
-**Environment variables:** `AI_AGENT_MODEL`, `VOX_REFINE=0` (disable LLM), `VOX_CACHE_ENABLED=1`
+Env vars: `AI_AGENT_MODEL`, `VOX_REFINE=0` (disable LLM), `VOX_CACHE_ENABLED=1`, `OLLAMA_HOST` (override endpoint).
 
-## VoxCore Integration
-
-See the complete [VoxCore Integration Guide](docs/voxcore-integration.md) for setup with push-to-talk.
-
-**Quick setup:**
+## VoxCore integration
+Full guide: [docs/voxcore-integration.md](docs/voxcore-integration.md)
 ```bash
-# Install VoxCore if not already installed
 brew install cliffmin/tap/voxcore
-
-# Edit your VoxCore config
 vim ~/.hammerspoon/ptt_config.lua
-
-# Enable VoxCompose:
-# Set: LLM_REFINER = { ENABLED = true, CMD = { "voxcompose", "--duration" }, ... }
+# LLM_REFINER = { ENABLED = true, CMD = { "voxcompose", "--duration" }, ... }
 ```
 
 ## Installation
-
 ```bash
 brew tap cliffmin/tap
 brew install voxcompose ollama
 ```
-
-<details>
-<summary>Build from source</summary>
-
+Build from source:
 ```bash
 brew install openjdk@21 ollama
 git clone https://github.com/cliffmin/voxcompose.git
 cd voxcompose && ./gradlew --no-daemon clean fatJar
 ```
-</details>
-
-## Upgrading
-
-Update to the latest version:
-
-```bash
-brew update
-brew upgrade voxcompose
-```
-
-Your data is preserved:
-- Learned profile: `~/.config/voxcompose/learned_profile.json`
-- Learning history and corrections
-
-To verify the upgrade:
-```bash
-voxcompose --version
-```
 
 ## Testing
+- Unit tests: `./gradlew test`
+- Integration: `./tests/run_tests.sh`
+- Golden accuracy/perf (local-only, needs ffmpeg + whisper-cpp + Ollama running): `tests/run_golden.sh` (writes to `tests/results/`, gitignored)
 
+## Upgrading
 ```bash
-./gradlew test          # Java unit tests
-./tests/run_tests.sh    # Integration tests
+brew update && brew upgrade voxcompose
+voxcompose --version
 ```
+Data is preserved (learned profile at `~/.config/voxcompose/learned_profile.json`).
