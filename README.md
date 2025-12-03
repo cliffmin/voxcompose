@@ -1,6 +1,6 @@
 # VoxCompose
 
-Transcript refiner for [VoxCore](https://github.com/cliffmin/voxcore) with self-learning corrections and optional local LLM polish.
+Universal voice-to-anything hotkey: capture once, paste anywhere, and keep every recording safe. VoxCompose adapts to your speech over time, strips filler, and optionally adds local LLM polish—perfect for AI prompt workflows and cross-app dictation.
 
 ## Quick start
 ```bash
@@ -20,10 +20,11 @@ echo "i want to pushto github and committhis code" | voxcompose
 - Optional (golden/accuracy suite): ffmpeg/ffprobe, whisper-cpp (`whisper-cli`), jq, bc
 
 ## Features
-- **Self-learning corrections**: fixes common errors without LLM calls
-- **Duration-aware**: <21s uses corrections-only; long-form adds LLM
-- **Fast & local**: ~140ms short-path; 100% on-device with Ollama (no API keys)
-- **Privacy-first**: local by default; if you set `AI_AGENT_URL`/`OLLAMA_HOST` to remote, transcripts go there
+- **Universal hotkey → any app**: speak once, paste into ChatGPT/Claude/Cursor/email/docs.
+- **Never lose work**: every capture is saved locally; failures don’t cost you recordings.
+- **Self-learning & adaptive**: corrections improve with your speech patterns; fixes concatenations/tech terms.
+- **Duration-aware**: <21s uses fast corrections-only; longer adds LLM refinement for clarity.
+- **Fast & local**: ~140ms short-path; 100% on-device with Ollama (no API keys); privacy-first unless you point at a remote `AI_AGENT_URL`/`OLLAMA_HOST`.
 
 Recent improvements (0.4.4):
 - Short clips skip LLM (~90% faster for <21s)
