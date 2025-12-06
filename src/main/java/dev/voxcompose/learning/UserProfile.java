@@ -2,6 +2,7 @@ package dev.voxcompose.learning;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -103,5 +104,44 @@ public class UserProfile {
     public static UserProfile fromJson(String json) {
         Gson gson = new Gson();
         return gson.fromJson(json, UserProfile.class);
+    }
+
+    /**
+     * Export vocabulary to Whisper-compatible format (comma-separated terms).
+     * Combines technical vocabulary and capitalization corrections for maximum benefit.
+     * Limits to 1000 words to stay within Whisper token limits.
+     *
+     * @return Comma-separated vocabulary string for Whisper INITIAL_PROMPT
+     */
+    public String exportVocabularyForWhisper() {
+        Set<String> allTerms = new LinkedHashSet<>();
+
+        // Add technical vocabulary (e.g., "GitHub", "VoxCore")
+        allTerms.addAll(technicalVocabulary);
+
+        // Add capitalization corrections (e.g., "JSON", "API")
+        allTerms.addAll(capitalizations.values());
+
+        // Add unique corrected words (e.g., "push to" from "pushto")
+        allTerms.addAll(wordCorrections.values());
+
+        // Limit to ~1000 words (Whisper token limit)
+        List<String> limitedTerms = allTerms.stream()
+            .limit(1000)
+            .toList();
+
+        return String.join(", ", limitedTerms);
+    }
+
+    /**
+     * Export vocabulary to a file that VoxCore can read.
+     *
+     * @param filePath Path to write vocabulary file
+     * @throws IOException if write fails
+     */
+    public void exportVocabularyToFile(java.nio.file.Path filePath) throws IOException {
+        String vocabulary = exportVocabularyForWhisper();
+        java.nio.file.Files.createDirectories(filePath.getParent());
+        java.nio.file.Files.writeString(filePath, vocabulary, java.nio.charset.StandardCharsets.UTF_8);
     }
 }
