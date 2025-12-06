@@ -200,6 +200,7 @@ public class Configuration {
             "  --cache-size <n>       Max cache entries (default: 100)",
             "  --cache-ttl-ms <ms>    Cache TTL in milliseconds (default: 3600000)",
             "  --duration <seconds>   Input audio duration (for threshold checking)",
+            "  --export-vocabulary    Export learned vocabulary to ~/.config/voxcompose/vocabulary.txt",
             "  --version, -V          Print version and exit",
             "  --help, -h             Show this help and exit",
             "",

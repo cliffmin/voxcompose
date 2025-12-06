@@ -44,7 +44,27 @@ public class Main {
       System.out.println(caps.toJson());
       System.exit(0);
     }
-    
+
+    // Handle --export-vocabulary request
+    if (args.length > 0 && args[0].equals("--export-vocabulary")) {
+      try {
+        LearningService learner = LearningService.getInstance();
+        Path vocabPath = Paths.get(System.getProperty("user.home"),
+                                    ".config", "voxcompose", "vocabulary.txt");
+        learner.getProfile().exportVocabularyToFile(vocabPath);
+
+        int termCount = learner.getProfile().getTechnicalVocabulary().size() +
+                       learner.getProfile().getCapitalizations().size() +
+                       learner.getProfile().getWordCorrections().size();
+
+        System.err.println("Exported " + termCount + " terms to " + vocabPath);
+        System.exit(0);
+      } catch (IOException e) {
+        System.err.println("Error exporting vocabulary: " + e.getMessage());
+        System.exit(1);
+      }
+    }
+
     // Parse configuration efficiently
     Configuration config = Configuration.parse(args);
     
