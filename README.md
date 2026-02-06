@@ -1,6 +1,8 @@
 # VoxCompose
 
-Universal voice-to-anything hotkey: capture once, paste anywhere, and keep every recording safe. VoxCompose adapts to your speech over time, strips filler, and optionally adds local LLM polish—perfect for AI prompt workflows and cross-app dictation.
+Self-learning transcript refinement for [VoxCore](https://github.com/cliffmin/voxcore). Automatically fixes concatenations, capitalizes technical terms, and optionally applies local LLM polish -- all on-device, no API keys required.
+
+*Part of the [VoxCore ecosystem](https://github.com/cliffmin/voxcore#ecosystem) for local voice-to-text on macOS.*
 
 ## Quick start
 ```bash
@@ -26,10 +28,11 @@ echo "i want to pushto github and committhis code" | voxcompose
 - **Duration-aware**: <21s uses fast corrections-only; longer adds LLM refinement for clarity.
 - **Fast & local**: ~140ms short-path; 100% on-device with Ollama (no API keys); privacy-first unless you point at a remote `AI_AGENT_URL`/`OLLAMA_HOST`.
 
-Recent improvements (0.4.4):
-- Short clips skip LLM (~90% faster for <21s)
-- Upfront fixes for concatenations/tech terms (`pushto`, `committhis`, `github/json`, etc.)
-- Optional caching for repeated prompts
+Recent improvements (v1.0.0):
+- Self-learning corrections system (100% correction rate for word concatenations)
+- Duration-aware processing: fast corrections-only for <21s, full LLM for longer clips
+- Capabilities negotiation with VoxCore (returns learned threshold)
+- Connection pooling, response caching, buffered I/O for performance
 
 Automatic corrections (examples):
 - `pushto` → `push to`, `committhis` → `commit this`

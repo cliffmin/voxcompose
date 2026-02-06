@@ -24,8 +24,10 @@
 # Temporary fixes and patches
 /fixes/
 
-# IntelliJ IDEA
+# IDE and AI tools
 .idea/
+.cursor/
+.claude/
 *.iws
 *.iml
 *.ipr
@@ -33,3 +35,6 @@ out/
 build
 bin/
 internal/
+
+# Warp terminal
+warp.md
