@@ -9,7 +9,7 @@
 ## Reference
 
 - [Self-Learning](self-learning.md) - How automatic corrections work
-- [Performance](performance.md) - Benchmarks
+- [Performance](PERFORMANCE.md) - Benchmarks
 
 ## Related
 
