@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.voxcompose"
-version = "0.4.4"
+version = "1.0.0"
 
 java {
   toolchain { languageVersion.set(JavaLanguageVersion.of(21)) }
