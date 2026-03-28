@@ -60,6 +60,23 @@ vim ~/.hammerspoon/ptt_config.lua
 # LLM_REFINER = { ENABLED = true, CMD = { "voxcompose", "--duration" }, ... }
 ```
 
+## Ecosystem
+
+VoxCompose is a plugin in the VoxCore ecosystem. Install VoxCore first, then optionally add VoxCompose for adaptive LLM refinement.
+
+| Component | Role | Links |
+|-----------|------|-------|
+| **[VoxCore](https://github.com/cliffmin/voxcore)** | Core push-to-talk engine | [Setup](https://github.com/cliffmin/voxcore/tree/main/docs/setup) · [Architecture](https://github.com/cliffmin/voxcore/blob/main/docs/development/architecture.md) |
+| **VoxCompose** (this repo) | Self-learning transcript refinement plugin | [Docs](docs/) · [Integration guide](docs/voxcore-integration.md) |
+| **[homebrew-tap](https://github.com/cliffmin/homebrew-tap)** | Homebrew distribution for both | `brew tap cliffmin/tap` |
+
+## Documentation
+
+- [VoxCore Integration](docs/voxcore-integration.md) — connecting to VoxCore push-to-talk
+- [Architecture](docs/architecture.md) — system design and pipeline
+- [Self-Learning](docs/self-learning.md) — how corrections accumulate
+- [Performance](docs/performance.md) — benchmarks and tuning
+
 ## Installation
 ```bash
 brew tap cliffmin/tap
@@ -75,7 +92,6 @@ cd voxcompose && ./gradlew --no-daemon clean fatJar
 ## Testing
 - Unit tests: `./gradlew test`
 - Integration: `./tests/run_tests.sh`
-- Golden accuracy/perf (local-only, needs ffmpeg + whisper-cpp + Ollama running): `tests/run_golden.sh` (writes to `tests/results/`, gitignored)
 
 ## Upgrading
 ```bash
