@@ -1,5 +1,30 @@
 # VoxCompose
 
+
+> ## Archived · 2026-08-26
+>
+> **This project is no longer developed.** Work has moved to **SelfTalk** — a rebuild of
+> the same idea (press a key, speak, get your words at the cursor) with a deliberately
+> smaller scope and the lessons this line of work paid for written down as constraints
+> rather than rediscovered.
+>
+> **What carried forward: the measurements and the failures, not the code.** SelfTalk
+> starts from an empty repository. Nothing here is maintained; issues and pull requests
+> will not be answered.
+>
+> **Why this one stopped.** Three failures from this project are now permanent rules
+> elsewhere. A dangling symlink after a directory move killed the hotkey **silently for
+> five weeks** — `require` failed at startup and nothing a user would look at said so.
+> A zero-byte vocabulary file changed decoding by its *presence*, not its contents, and
+> removing it was worth 6.7 points of word error rate. And the benchmark compared two
+> word lists by index, so a single inserted word zeroed everything after it — a transcript
+> whose only defect was `Vox Core` for `VoxCore` scored 0%.
+>
+> The rules those became: fail loudly or not at all; presence is not content; never score
+> by index.
+
+---
+
 Self-learning transcript refinement for [VoxCore](https://github.com/cliffmin/voxcore). Automatically fixes concatenations, capitalizes technical terms, and optionally applies local LLM polish -- all on-device, no API keys required.
 
 *Part of the [VoxCore ecosystem](https://github.com/cliffmin/voxcore#ecosystem) for local voice-to-text on macOS.*
